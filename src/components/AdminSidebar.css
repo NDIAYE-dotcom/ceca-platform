@@ -1,0 +1,24 @@
+.admin-sidebar{
+  width:260px;
+  min-width:220px;
+  background:#f7f9fc;
+  border:1px solid rgba(15,40,80,0.04);
+  border-radius:10px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(10,20,40,0.04);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.sidebar-brand{display:flex;flex-direction:column;gap:4px}
+.sidebar-brand strong{color:var(--blue);font-size:18px}
+.sidebar-brand small{font-size:12px;color:#667}
+.sidebar-nav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.sidebar-nav a{display:block;padding:10px 12px;border-radius:8px;color:var(--dark);text-decoration:none}
+.sidebar-nav a:hover{background:#e9f0ff;color:var(--blue)}
+.sidebar-footer{margin-top:auto}
+.sidebar-footer .btn.small{padding:8px 10px;font-size:13px}
+
+/* Keep sidebar strictly lateral (side-by-side) on all viewports per request */
+/* Remove stacking media query so sidebar remains at fixed width to the left */
+

@@ -1,0 +1,4 @@
+.auth-page{max-width:640px;margin:20px auto}
+.auth-form{display:flex;flex-direction:column;gap:8px}
+.auth-form input{padding:8px;border:1px solid #e6e9ee;border-radius:6px}
+.auth-form .error{color:#a00;margin-top:8px}

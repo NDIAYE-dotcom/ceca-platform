@@ -1,0 +1,5 @@
+.references{padding:12px}
+.refs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.ref{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
+.ref h4{color:var(--blue);margin:0 0 6px}
+.ref p{margin:0;color:var(--muted)}

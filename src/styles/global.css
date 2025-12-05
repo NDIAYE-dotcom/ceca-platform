@@ -1,0 +1,79 @@
+:root{
+  --blue:#08295a;
+  --gold:#ffffff;
+  --muted:#6b7280;
+  --max-width:1100px;
+}
+*{box-sizing:border-box}
+.app-root{min-height:100vh;display:flex;flex-direction:column}
+html,body,#root{height:100%}
+body{font-family:Inter, system-ui, -apple-system, 'Helvetica Neue', Arial;line-height:1.4;color:#111;margin:0;background:#fff}
+.container{max-width:var(--max-width);margin:0 auto;padding:0 16px}
+.page-content{flex:1}
+a{color:var(--blue)}
+main{flex:1;min-height:60vh;padding:18px 0}
+.btn{display:inline-block;padding:8px 10px;background:#0b3d91;color:#fff;border-radius:6px;text-decoration:none}
+.btn.secondary{background:#e6e9ee;color:var(--blue)}
+h1,h2,h3{color:var(--blue)}
+
+/* Animations & motion utilities */
+:root{
+  --motion-duration: 420ms;
+  --motion-ease: cubic-bezier(.22,.9,.28,1);
+}
+
+@keyframes fadeInUp {
+  from {opacity:0; transform: translateY(8px)}
+  to {opacity:1; transform: translateY(0)}
+}
+
+@keyframes fadeIn {
+  from {opacity:0}
+  to {opacity:1}
+}
+
+.page-transition{animation: fadeIn var(--motion-duration) var(--motion-ease) both}
+.fade-in{animation: fadeIn var(--motion-duration) var(--motion-ease) both}
+.slide-up{animation: fadeInUp calc(var(--motion-duration) + 60ms) var(--motion-ease) both}
+
+.card{background:#fff;padding:12px;border-radius:10px;border:1px solid #e6e9ee;box-shadow:0 6px 18px rgba(11,61,145,0.04);transition:transform .28s var(--motion-ease),box-shadow .28s var(--motion-ease)}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,61,145,0.08)}
+
+.btn{transition:transform .18s var(--motion-ease),box-shadow .18s var(--motion-ease),background-color .18s}
+.btn:active{transform:translateY(1px)}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .page-transition,.fade-in,.slide-up,.card,.btn{animation:none;transition:none}
+}
+
+/* Responsive base adjustments */
+html{font-size:16px}
+@media (min-width:1200px){
+  html{font-size:18px}
+  :root{--max-width:1200px}
+}
+/* Expand container for very large screens so the app uses more surface */
+@media (min-width:1400px){
+  :root{--max-width:1600px}
+}
+@media (min-width:1800px){
+  :root{--max-width:2000px}
+}
+@media (max-width:900px){
+  html{font-size:15px}
+  .container{padding:0 14px}
+}
+@media (max-width:600px){
+  html{font-size:14px}
+  .container{padding:0 12px}
+  .brand a{font-size:16px}
+}
+
+/* Utility classes for responsive show/hide */
+.show-on-mobile{display:none}
+.hide-on-mobile{display:inherit}
+@media (max-width:900px){
+  .show-on-mobile{display:inline-block}
+  .hide-on-mobile{display:none}
+}

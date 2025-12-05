@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "dev@local",
+      "password": "password",
+      "full_name": "Développeur Local",
+      "role": "learner"
+    },
+    {
+      "email": "ceca-admin@gmail.com",
+      "password": "adminpass",
+      "full_name": "CECA Admin",
+      "role": "admin"
+    }
+  ]
+}

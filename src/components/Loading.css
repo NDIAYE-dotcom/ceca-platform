@@ -1,0 +1,25 @@
+.loading-root{display:flex;align-items:center;justify-content:center;min-height:200px;padding:18px}
+.loading-wrap{display:flex;align-items:center;gap:18px;background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(250,250,252,0.9));padding:18px 22px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.08);backdrop-filter: blur(6px)}
+.loader{flex:0 0 auto}
+.ring{filter: drop-shadow(0 4px 12px rgba(11,61,145,0.08))}
+.orbit{transform-origin:24px 24px;animation: orbit 1.2s cubic-bezier(.2,.9,.28,1) infinite}
+.orb{stroke-dasharray: 56; stroke-dashoffset: 56; animation: dash 1.2s ease-in-out infinite}
+
+@keyframes orbit{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes dash{0%{stroke-dashoffset:56}50%{stroke-dashoffset:14}100%{stroke-dashoffset:56}}
+
+.loading-texts{display:flex;flex-direction:column}
+.loading-title{font-weight:700;color:var(--blue);font-size:16px}
+.loading-sub{font-size:13px;color:var(--muted)}
+
+/* Small screens */
+@media (max-width:640px){
+  .loading-wrap{padding:12px;gap:12px}
+  .loading-title{font-size:14px}
+  .loading-sub{font-size:12px}
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .orbit,.orb{animation:none}
+}
