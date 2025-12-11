@@ -1,0 +1,10 @@
+{
+  "users": [
+    {
+      "email": "ceca-admin@gmail.com",
+      "password": "adminpass",
+      "full_name": "CECA Admin",
+      "role": "admin"
+    }
+  ]
+}
