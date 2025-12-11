@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import courses from '../data/courses'
+import { getFormations } from '../lib/formations'
 import './Accueil.css'
 import { useEffect } from 'react'
 import useInView from '../hooks/useInView'
@@ -90,6 +90,8 @@ export default function Accueil(){
     else window.addEventListener('load', onLoad)
     return () => { mounted = false; window.removeEventListener('load', onLoad) }
   },[])
+  const [featured, setFeatured] = React.useState([])
+  React.useEffect(()=>{ let mounted=true; (async ()=>{ const data = await getFormations(); if(mounted) setFeatured(data.slice(0,4)) })(); return ()=>{ mounted=false } },[])
   return (
     <>
     <header className="site-hero" role="banner">
@@ -125,7 +127,7 @@ export default function Accueil(){
       <div className="container sample-courses">
         <h2>Offres de formation</h2>
         <div className="courses-grid">
-          {courses.map(c=> (
+          {featured.map(c=> (
             <div key={c.id} className="course-card">
               <h3>{c.title}</h3>
               <p className="meta">{c.category} • {c.duration}</p>

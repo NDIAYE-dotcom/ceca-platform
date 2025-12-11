@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
-import courses from '../data/courses'
+import { getFormationById } from '../lib/formations'
 import { generateCertificate } from '../utils/certificate'
 import './Elearning.css'
 import Classroom from '../components/Classroom'
 
 export default function Elearning(){
   const {id} = useParams()
-  const course = courses.find(c=>c.id===id)
+  const [course, setCourse] = useState(null)
+  useEffect(()=>{ let mounted = true; (async ()=>{ const f = await getFormationById(id); if(mounted) setCourse(f) })(); return ()=>{ mounted = false } },[id])
   const [name, setName] = useState('Apprenant')
   const [progress, setProgress] = useState(0)
   const [quizPassed, setQuizPassed] = useState(false)
@@ -32,6 +33,7 @@ export default function Elearning(){
     URL.revokeObjectURL(url)
   }
 
+  if(course === null) return <div className="container">Chargement…</div>
   if(!course) return <div className="container">Formation introuvable</div>
 
   return (
@@ -40,7 +42,7 @@ export default function Elearning(){
       <div className="elearn-grid">
         <div>
           <div className="video-wrap">
-            <iframe title="video" width="100%" height="360" src={course.videoUrl} frameBorder="0" allowFullScreen></iframe>
+            <iframe title="video" width="100%" height="360" src="https://www.youtube.com/embed/s7gts7uj3IY" frameBorder="0" allowFullScreen></iframe>
           </div>
 
           <h3>Supports</h3>

@@ -16,21 +16,14 @@ export default function Login(){
     setError(null)
     const res = await signIn({email,password})
     if(res.error) return setError(res.error.message || 'Erreur')
-    // redirect back to the original page if provided
+    // redirect admin to /admin, otherwise back to original destination
+    const returnedUser = res.user
+    const ADMIN_EMAIL = 'ceca-admin@gmail.com'
+    if(returnedUser && String(returnedUser.email).toLowerCase() === ADMIN_EMAIL) {
+      nav('/admin')
+      return
+    }
     const dest = location.state?.from || '/'
-    nav(dest)
-  }
-
-  // helper: quick admin sign-in using dev credentials
-  async function quickAdmin(){
-    setError(null)
-    const adminEmail = 'ceca-admin@gmail.com'
-    const adminPass = 'adminpass'
-    setEmail(adminEmail)
-    setPassword(adminPass)
-    const res = await signIn({ email: adminEmail, password: adminPass })
-    if(res.error) return setError(res.error.message || 'Erreur')
-    const dest = location.state?.from || '/admin'
     nav(dest)
   }
 
@@ -41,7 +34,6 @@ export default function Login(){
         <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" required />
         <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" required />
         <button className="btn" type="submit">Se connecter</button>
-        <button type="button" className="btn" style={{marginLeft:8,background:'#0b3b82'}} onClick={quickAdmin}>Se connecter en tant qu'admin</button>
         {error && <div className="error">{error}</div>}
         <div style={{marginTop:10}}>Pas de compte ? <Link to="/register">S'inscrire</Link></div>
       </form>

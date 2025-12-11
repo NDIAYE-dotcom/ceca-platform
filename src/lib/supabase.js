@@ -110,3 +110,4 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
 }
 
 export const supabase = _supabase
+export const isSupabaseEnabled = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)

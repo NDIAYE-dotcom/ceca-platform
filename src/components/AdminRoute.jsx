@@ -9,11 +9,14 @@ export default function AdminRoute({ children }){
 
   if(loading) return <div style={{padding:24}}><Loading text="Vérification de la session" /></div>
   if(!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />
-  if(user && user.role && user.role !== 'admin'){
+  // Restrict strictly to the single admin identity
+  const ALLOWED_ADMIN = 'ceca-admin@gmail.com'
+  const email = (user?.email || '').toLowerCase()
+  if(email !== ALLOWED_ADMIN){
     return (
       <div style={{padding:24}}>
         <h3>Accès réservé aux administrateurs</h3>
-        <p>Votre compte ne dispose pas des droits nécessaires pour accéder à cette section.</p>
+        <p>Seul le compte administrateur <strong>{ALLOWED_ADMIN}</strong> peut accéder à cette section.</p>
       </div>
     )
   }

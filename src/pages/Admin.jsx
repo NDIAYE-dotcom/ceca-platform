@@ -1,8 +1,64 @@
 import React from 'react'
 import './Admin.css'
 import AdminSidebar from '../components/AdminSidebar'
+import { useAuth } from '../context/AuthContext'
+import { useLocation, Link } from 'react-router-dom'
+import FormationsAdmin from './admin/FormationsAdmin'
+import ApprenantsAdmin from './admin/ApprenantsAdmin'
 
 export default function Admin(){
+  const { user, loading } = useAuth()
+  const location = useLocation()
+
+  // determine active admin subsection based on pathname
+  const subpath = location.pathname.replace(/^\/admin\/?/, '')
+  const section = subpath === '' ? 'dashboard' : subpath
+
+  function renderSection(name){
+    switch(name){
+      case 'formations':
+        return <FormationsAdmin />
+      case 'apprenants':
+        return <ApprenantsAdmin />
+      case 'certificats':
+        return (
+          <div>
+            <h2>Certificats</h2>
+            <p className="muted">Génération et gestion des certificats (placeholder)</p>
+            <div style={{marginTop:12}} className="card">Aucun certificat généré — placeholder</div>
+          </div>
+        )
+      case 'instructeurs':
+        return (
+          <div>
+            <h2>Instructeurs</h2>
+            <p className="muted">Liste des instructeurs (placeholder)</p>
+            <div style={{marginTop:12}} className="card">Aucun instructeur — placeholder</div>
+          </div>
+        )
+      case 'parametres':
+        return (
+          <div>
+            <h2>Paramètres</h2>
+            <p className="muted">Configuration du site (placeholder)</p>
+            <div style={{marginTop:12}} className="card">Options de configuration — placeholder</div>
+          </div>
+        )
+      default:
+        return (
+          <div>
+            <h2>Tableau de bord</h2>
+            <p className="muted">Vue d'ensemble (placeholder)</p>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12,marginTop:12}}>
+              <div className="card">Formations: —</div>
+              <div className="card">Apprenants: —</div>
+              <div className="card">Certificats: —</div>
+              <div className="card">Instructeurs: —</div>
+            </div>
+          </div>
+        )
+    }
+  }
   return (
     <section className="container admin-page">
       <div className="admin-layout">
@@ -18,6 +74,13 @@ export default function Admin(){
               <div style={{fontSize:12,color:'#666'}}>Mode</div>
               <div style={{background:'#ffe9b3',color:'#7a4a00',padding:'6px 10px',borderRadius:6,fontWeight:600}}>Preview (no DB)</div>
             </div>
+          </div>
+
+          {/* Diagnostic panel removed as requested */}
+
+          {/* Section-specific content (rendered according to sidebar link) */}
+          <div style={{marginTop:18}}>
+            {renderSection(section)}
           </div>
 
           <div className="admin-stats" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:12,marginTop:18}}>

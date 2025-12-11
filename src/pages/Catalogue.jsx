@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
-import courses from '../data/courses'
+import { getFormations } from '../lib/formations'
 import './Catalogue.css'
 import CourseCard from '../components/CourseCard'
 import Lightbox from '../components/Lightbox'
@@ -8,6 +8,8 @@ import Lightbox from '../components/Lightbox'
 export default function Catalogue(){
   const [filter, setFilter] = useState('')
   const [lightbox, setLightbox] = useState(null)
+  const [courses, setCourses] = useState([])
+  useEffect(()=>{ let mounted = true; (async ()=>{ const data = await getFormations(); if(mounted) setCourses(data) })(); return ()=>{ mounted = false } },[])
   const cats = Array.from(new Set(courses.map(c=>c.category)))
   const list = filter ? courses.filter(c=>c.category===filter) : courses
   return (

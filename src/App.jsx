@@ -33,6 +33,11 @@ export default function App(){
           <Route path="/references" element={<References />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/formations" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/apprenants" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/certificats" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/instructeurs" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/parametres" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           </Routes>

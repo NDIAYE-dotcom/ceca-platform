@@ -111,6 +111,16 @@ export function AuthProvider({ children }){
   }
 
   async function signIn({ email, password }){
+    // Dev override: allow a local admin login regardless of Supabase state
+    const ADMIN_EMAIL = 'ceca-admin@gmail.com'
+    const ADMIN_PASSWORD = 'adminpass'
+    if(String(email).toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD){
+      const localUser = { id: 'local-admin', email: ADMIN_EMAIL, role: 'admin', full_name: 'CECA Admin' }
+      setUser(localUser)
+      try{ localStorage.setItem('ceca_local_user', JSON.stringify(localUser)) }catch(e){}
+      return { user: localUser }
+    }
+
     try{
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       // Debug logs for failed sign-in (remove in production)

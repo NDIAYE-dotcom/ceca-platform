@@ -1,0 +1,57 @@
+.admin-apprenants{display:flex;flex-direction:column;gap:12px}
+.admin-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.apprenants-list{display:flex;flex-direction:column;gap:10px}
+.apprenant-row{display:flex;justify-content:space-between;gap:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid #eef3fb}
+.apprenant-main{flex:1}
+.apprenant-name{font-weight:700}
+.apprenant-meta{font-size:13px;color:var(--muted);margin-top:6px}
+.apprenant-extra{font-size:13px;color:var(--muted);margin-top:6px}
+.apprenant-notes{margin-top:8px;background:#fbfdff;padding:8px;border-radius:6px;border:1px solid #eef6ff}
+.apprenant-actions{display:flex;flex-direction:column;gap:8px}
+
+/* Modal styles */
+.modal-backdrop{
+	position:fixed;
+	inset:0;
+	background:rgba(12,20,32,0.45);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	padding:24px;
+	z-index:1200;
+	animation:fadeIn 220ms ease-out;
+}
+
+.modal-card{
+	width:100%;
+	max-width:760px;
+	background:linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+	border-radius:12px;
+	box-shadow:0 10px 30px rgba(8,20,40,0.12), 0 2px 6px rgba(8,20,40,0.06);
+	padding:20px 22px;
+	transform:translateY(10px) scale(0.995);
+	animation:popUp 260ms cubic-bezier(.2,.9,.26,1) forwards;
+	border:1px solid rgba(12,36,80,0.06);
+}
+
+.modal-card h3{margin:0 0 8px 0;font-size:18px}
+.modal-card .muted{color:var(--muted)}
+
+@keyframes fadeIn{
+	from{opacity:0}
+	to{opacity:1}
+}
+
+@keyframes popUp{
+	from{opacity:0;transform:translateY(10px) scale(0.985)}
+	to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* Responsive tweaks for modal content */
+@media (max-width:520px){
+	.modal-card{padding:16px;max-width:92%}
+	.modal-card h3{font-size:16px}
+}
+
+/* small visual polish for action buttons inside rows */
+.apprenant-actions .btn{min-width:96px}

@@ -1,0 +1,5 @@
+.fa-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);z-index:200}
+.fa-modal-inner{background:#fff;padding:18px;border-radius:8px;min-width:320px;max-width:760px;box-shadow:0 10px 40px rgba(2,6,23,0.2)}
+.fa-modal-inner h3{margin-top:0}
+.fa-modal-inner label{display:block;margin-top:8px}
+.fa-modal-inner input,.fa-modal-inner textarea{width:100%;box-sizing:border-box;padding:8px;margin-top:6px;border:1px solid #e6e9ee;border-radius:6px}
