@@ -1,13 +1,28 @@
 .elearn-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px}
 
 /* Limit the visible width of the video area so the sidebar remains prominent */
-.video-wrap{background:#000;max-width:920px;margin-right:auto;border-radius:6px;overflow:hidden}
-.video-wrap iframe{display:block;border:0;width:100%;height:360px}
+.video-wrap{background:#000;max-width:920px;margin-right:auto;border-radius:6px;overflow:hidden;position:relative;aspect-ratio:16/9}
+.video-wrap iframe{display:block;border:0;width:100%;height:100%;position:absolute;inset:0}
 .quiz button{margin-right:8px;margin-top:8px}
 aside input[type=range]{width:100%}
 aside input[type=text], aside input{width:100%;padding:8px;margin-top:6px;border:1px solid #e6e9ee;border-radius:6px}
 .note{font-size:13px;color:var(--muted);margin-top:8px}
 .prog-num{font-weight:700;color:var(--blue);margin-top:8px}
+
+.elearn-grid aside{background:#fff;border:1px solid #e6e9ee;border-radius:10px;padding:12px;box-shadow:0 8px 26px rgba(11,61,145,0.06)}
+.elearn-grid h1, .elearn-grid h3, .elearn-grid h4{margin-top:0}
+
+/* Responsive layout */
+@media (max-width:900px){
+	.elearn-grid{grid-template-columns:1fr;gap:14px}
+	.video-wrap{max-width:100%;margin-right:0}
+	.quiz button{width:100%;margin-right:0}
+}
+
+@media (max-width:600px){
+	.elearn-grid aside{padding:12px}
+	.video-wrap{border-radius:10px}
+}
 
 /* Classroom styles */
 .classroom{margin-top:14px}

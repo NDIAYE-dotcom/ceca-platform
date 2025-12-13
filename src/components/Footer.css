@@ -1,3 +1,36 @@
-.site-footer{background:#f5f7fa;color:#333;padding:18px 0;border-top:1px solid #e6e9ee}
-.footer-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center}
-.footer-inner a{color:#0b3d91;text-decoration:none}
+.site-footer{background:linear-gradient(180deg,#08295a 0%,#051a3a 100%);color:#fff;padding:48px 0 0;margin-top:60px}
+.site-footer a{color:#fff;text-decoration:none;transition:color .2s ease}
+.site-footer a:hover{color:#ffb81c}
+
+.footer-inner{max-width:1100px;margin:0 auto;padding:0 16px 48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;align-items:start}
+
+.footer-section{}
+.footer-brand .footer-logo{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:14px;opacity:0.8;margin:0;color:#ccc}
+
+.footer-section h4{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 14px;color:#fff}
+.footer-section ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.footer-section ul li a{opacity:0.85;font-size:14px}
+.footer-section ul li a:hover{opacity:1}
+
+.footer-contact p{margin:6px 0;font-size:14px;opacity:0.85}
+.footer-contact a{font-weight:500}
+
+.footer-socials{display:flex;gap:12px;margin-top:16px}
+.social-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;font-size:18px;transition:background .2s ease,transform .2s ease,color .2s ease;color:#fff}
+.social-icon:hover{background:rgba(255,0,0,0.3);transform:translateY(-3px);color:#ff6b6b}
+
+.footer-bottom{background:rgba(0,0,0,0.2);padding:16px 0;border-top:1px solid rgba(255,255,255,0.1)}
+.footer-bottom p{margin:0;text-align:center;font-size:13px;opacity:0.8}
+
+@media (max-width:900px){
+  .footer-inner{grid-template-columns:1fr 1fr;gap:24px;padding:0 16px 32px}
+  .site-footer{padding:36px 0 0}
+}
+
+@media (max-width:600px){
+  .footer-inner{grid-template-columns:1fr;gap:20px;padding:0 16px 24px}
+  .site-footer{margin-top:40px;padding:24px 0 0}
+  .footer-section h4{font-size:13px;margin-bottom:10px}
+  .footer-socials{justify-content:flex-start}
+}

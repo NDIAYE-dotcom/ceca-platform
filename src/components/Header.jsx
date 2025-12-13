@@ -18,6 +18,8 @@ export default function Header(){
     return ()=> window.removeEventListener('scroll', onScroll)
   },[])
 
+  const closeMenu = ()=> setMenuOpen(false)
+
   return (
     <header ref={ref} className={`site-header ${scrolled ? 'scrolled' : ''} ${menuOpen ? 'menu-open' : ''}`}>
       <div className="container header-inner">
@@ -34,24 +36,17 @@ export default function Header(){
           <span aria-hidden>☰</span>
         </button>
         <nav className={`main-nav ${menuOpen ? 'open' : ''}`}>
-          <button
-            className="nav-close"
-            aria-label="Fermer le menu"
-            onClick={() => setMenuOpen(false)}
-          >
-            ×
-          </button>
           <div className="nav-wrap">
-            <Link to="/a-propos" className="nav-link highlight">À propos</Link>
-            <Link to="/catalogue" className="nav-link highlight">Formations</Link>
-            <Link to="/elearning/mp-101" className="nav-link">Espace e-learning</Link>
+            <Link to="/a-propos" className="nav-link highlight" onClick={closeMenu}>À propos</Link>
+            <Link to="/catalogue" className="nav-link highlight" onClick={closeMenu}>Formations</Link>
+            <Link to="/elearning/mp-101" className="nav-link" onClick={closeMenu}>Espace e-learning</Link>
             {user ? (
               <>
                 <span className="nav-user">{user.user_metadata?.name || user.email}</span>
-                <button onClick={signOut} className="btn small nav-signout">Déconnexion</button>
+                <button onClick={()=>{ signOut(); closeMenu() }} className="btn small nav-signout">Déconnexion</button>
               </>
             ) : null}
-            <Link to="/admin" className="btn small nav-admin">Admin</Link>
+            <Link to="/admin" className="btn small nav-admin" onClick={closeMenu}>Admin</Link>
           </div>
         </nav>
       </div>
