@@ -98,7 +98,7 @@ export default function Accueil(){
       <div className="hero-overlay-layer" />
       <div className="container hero-inner">
         <div className="hero-left">
-          <h1 className="hero-title">L'expertise au service de la performance publique</h1>
+          <h1 className="hero-title">L'expertise au service de la performance de la gestion publique</h1>
           <p className="hero-sub">Formations certifiantes en gouvernance publique, marchés publics, audit, finances publiques et développement institutionnel en Afrique.</p>
 
           <ul className="hero-features">
