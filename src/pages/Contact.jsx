@@ -31,7 +31,7 @@ export default function Contact(){
 
     try{
       // fallback to mailto
-      const mailto = `mailto:contact@ceca-solutions.africa?subject=${encodeURIComponent(form.subject || 'Contact via site')}&body=${encodeURIComponent(`Nom: ${form.name}\nOrganisation: ${form.organisation}\n\n${form.message}`)}`
+      const mailto = `mailto:ceconsultingafrique@gmail.com?subject=${encodeURIComponent(form.subject || 'Contact via site')}&body=${encodeURIComponent(`Nom: ${form.name}\nOrganisation: ${form.organisation}\n\n${form.message}`)}`
       window.location.href = mailto
       setSuccess('Redirection vers votre client mail.')
     }catch(e){
@@ -49,8 +49,10 @@ export default function Contact(){
         <div className="contact-info">
           <p><strong>CECA-Solutions</strong></p>
           <p>Keur Massar, Dakar, Sénégal</p>
-          <p>Email: <a href="mailto:contact@ceca-solutions.africa">contact@ceca-solutions.africa</a></p>
-          <p>Téléphone: +221 77 000 00 00</p>
+          <p>Email: <a href="mailto:ceconsultingafrique@gmail.com">ceconsultingafrique@gmail.com</a></p>
+          <p>Téléphone: <a href="tel:+221338377143">+221 33 837 7143</a> / <a href="tel:77512307676">77 512 307 676</a></p>
+          <p style={{fontSize:'14px'}}><strong>NINEA:</strong> 0063366731R1</p>
+          <p style={{fontSize:'14px'}}><strong>RCCM:</strong> SN.DKR.2017.A.10183</p>
           <p>Suivez-nous : <a href="#">LinkedIn</a> • <a href="#">Twitter</a> • <a href="#">Facebook</a></p>
         </div>
 

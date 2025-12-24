@@ -29,7 +29,9 @@ export default function Footer(){
         <div className="footer-section footer-contact">
           <h4>Contact</h4>
           <p>📍 Keur Massar, Dakar, Sénégal</p>
-          <p><a href="mailto:contact@ceca-solutions.africa">📧 contact@ceca-solutions.africa</a></p>
+          <p><a href="tel:+221338377143">📞 +221 33 837 7143</a> / <a href="tel:77512307676">77 512 307 676</a></p>
+          <p><a href="mailto:ceconsultingafrique@gmail.com">📧 ceconsultingafrique@gmail.com</a></p>
+          <p style={{fontSize:'12px', opacity:'0.8'}}>NINEA: 0063366731R1 • RCCM: SN.DKR.2017.A.10183</p>
           <div className="footer-socials">
             {socials.map(s => {
               const Icon = s.icon
