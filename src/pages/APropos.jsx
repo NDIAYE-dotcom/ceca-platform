@@ -9,7 +9,7 @@ export default function APropos(){
       <div className="hero container">
         <div className="hero-left">
           <h1>CECA</h1>
-          <p className="slogan">L'expertises au services de la performance publique</p>
+          <p className="slogan">L'expertise au service de la performance publique</p>
           <p className="lead">Cabinet africain de conseil, d'audit et de formation spécialisé dans la gouvernance publique, la commande publique, le développement institutionnel et la gestion des ressources humaines. Nous accompagnons administrations, collectivités et partenaires pour des réformes transparentes et durables.</p>
         </div>
         <div className="hero-right">
