@@ -58,7 +58,7 @@ export default function Formation(){
         <main className="content-main">
           <section className="card objectives">
             <h3>Objectifs</h3>
-            <p>À l'issue de la formation, les participants seront capables de mettre en œuvre des procédures conformes aux meilleures pratiques.</p>
+            <p>{course.objective || "À l'issue de la formation, les participants seront capables de mettre en œuvre des procédures conformes aux meilleures pratiques."}</p>
           </section>
 
           <section className="card modules">
@@ -78,7 +78,14 @@ export default function Formation(){
 
           <section className="card details">
             <h3>Public cible</h3>
-            <p>Agents publics, responsables financiers, auditeurs internes, consultants.</p>
+            <p>{course.target || 'Agents publics, responsables financiers, auditeurs internes, consultants.'}</p>
+
+            {course.modules && course.modules.length > 0 && (
+              <>
+                <h3>Résumé des modules</h3>
+                <p>{course.modules.join(' • ')}</p>
+              </>
+            )}
 
             {course.price && (
               <>

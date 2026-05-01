@@ -23,34 +23,18 @@
 @media (max-width:900px){
 	.mobile-toggle{display:inline-block}
 
-	/* Mobile menu: slide-in panel from right; narrower and modern look */
-	.main-nav{position:fixed;right:0;top:0;background:linear-gradient(180deg,rgba(2,18,38,0.98),rgba(2,18,38,0.98));width:min(320px,92vw);height:100%;padding:calc(var(--site-header-height) + 18px) 18px 18px 18px;display:flex;flex-direction:column;gap:16px;z-index:11050;transform:translateX(110%);transition:transform .28s ease;box-shadow: -12px 0 36px rgba(2,6,23,0.32)}
-	.main-nav{position:fixed;right:0;top:0;background:#08295a;width:min(320px,92vw);height:100%;padding:calc(var(--site-header-height) + 18px) 18px 18px 18px;display:flex;flex-direction:column;gap:16px;z-index:11140;transform:translateX(110%);transition:transform .28s ease;box-shadow: -12px 0 36px rgba(2,6,23,0.32)}
-	.main-nav.open{transform:translateX(0)}
+	/* Mobile menu: anchored panel under the header with a modern overlay feel */
+	.main-nav{position:fixed;right:12px;left:12px;top:calc(var(--site-header-height) + 10px);background:linear-gradient(180deg,rgba(8,41,90,0.98),rgba(7,34,71,0.98));border:1px solid rgba(255,255,255,0.08);border-radius:18px;width:auto;height:auto;max-height:calc(100vh - var(--site-header-height) - 22px);padding:16px;display:flex;flex-direction:column;gap:12px;z-index:11140;transform:translateY(-14px) scale(.98);opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.22,.9,.28,1),opacity .22s ease,box-shadow .26s ease;box-shadow:0 24px 60px rgba(2,6,23,0.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:auto}
+	.main-nav.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+	.main-nav::before{content:'';position:sticky;top:0;display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);margin:0 0 6px}
 
-	.main-nav a{margin-left:0;padding:10px 6px}
-	.main-nav .btn.small{margin-left:0}
+	.main-nav a{margin-left:0;padding:12px 14px;border-radius:12px;color:#fff}
+	.main-nav a.nav-link{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.04)}
+	.main-nav a.highlight:hover{color:#fff;background:rgba(255,255,255,0.12)}
+	.main-nav .btn.small{margin-left:0;border-radius:12px;padding:11px 14px;background:#fff;color:#08295a;box-shadow:0 12px 28px rgba(6,20,48,0.18)}
 
-	/* Wrapper around the primary links so we can render a limited blue band behind them */
-	.main-nav .nav-wrap{position:relative;display:flex;flex-direction:column;gap:12px;z-index:2}
-	.main-nav .nav-wrap::before{
-		content: '';
-		position: absolute;
-		left: -18px;
-		right: -18px;
-		top: -12px;
-		bottom: -12px;
-		background: linear-gradient(180deg, rgba(2,41,90,0.96), rgba(2,18,58,0.97));
-		border-radius: 8px;
-		z-index: 1;
-		pointer-events: none;
-	}
-
-	.main-nav .nav-wrap .nav-link,
-	.main-nav .nav-wrap .btn.small,
-	.main-nav .nav-wrap .nav-user,
-	.main-nav .nav-wrap .nav-signout,
-	.main-nav .nav-wrap .nav-admin{position:relative;z-index:2}
+	.main-nav .nav-wrap{display:flex;flex-direction:column;gap:10px}
+	.main-nav .nav-user{color:rgba(255,255,255,0.86);padding:8px 4px 2px;font-size:13px}
 
 	/* Ensure the toggle sits above page content so it's always clickable */
 	.mobile-toggle{z-index:11100;position:relative}
@@ -60,32 +44,9 @@
 .site-header{position:sticky;top:0;z-index:40;backdrop-filter: blur(4px);-webkit-backdrop-filter: blur(4px);transition:box-shadow .25s ease,transform .25s ease}
 .site-header.scrolled{box-shadow:0 6px 18px rgba(2,6,23,0.16);transform:translateY(-1px)}
 
-/* When mobile menu opens, drop the header down so the menu panel is fully visible beneath it */
-.site-header.menu-open{transform:translateY(calc(var(--site-header-height)));}
-
 @media (max-width:900px){
 	/* ensure header sits above content when shifted */
 	.site-header{z-index:11100}
 	/* keep mobile toggle clickable */
 	.mobile-toggle{z-index:11130}
-
-	/* When menu is open, push the nav panel down so its content is not obscured by the header */
-	.site-header.menu-open .main-nav{ top: var(--site-header-height); height: calc(100% - var(--site-header-height)); padding: 18px; }
-
-	/* Blue band under the header to cover page content and provide contrast for the menu */
-	.site-header.menu-open::after{
-		content: '';
-		position:fixed;
-		left:0;
-		right:0;
-		top: var(--site-header-height);
-		height: calc(var(--site-header-height) + 8px);
-		background: linear-gradient(180deg,#08295a,#072247);
-		z-index:11110;
-		box-shadow: 0 6px 18px rgba(2,6,23,0.08);
-		pointer-events: none;
-	}
-
-	/* Make first links more visible by giving them a subtle lighter strip */
-	.main-nav .nav-link{background: rgba(255,255,255,0.03);padding:12px 10px;border-radius:6px}
 }

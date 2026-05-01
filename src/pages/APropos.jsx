@@ -13,7 +13,7 @@ export default function APropos(){
           <p className="lead">Cabinet africain de conseil, d'audit et de formation spécialisé dans la gouvernance publique, la commande publique, le développement institutionnel et la gestion des ressources humaines. Nous accompagnons administrations, collectivités et partenaires pour des réformes transparentes et durables.</p>
         </div>
         <div className="hero-right">
-          <img src="/assets/hero-about.svg" alt="CECA hero" />
+          <img src="/img%20sm-01.png" alt="CECA hero" />
         </div>
       </div>
 

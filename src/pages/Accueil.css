@@ -29,6 +29,15 @@
 .domain-body h3{margin:6px 0 0;font-size:20px;color:#08295a;font-weight:700}
 .domain-desc{margin:8px 0 0;color:#586068;font-size:15px}
 
+.domain-more-btn{margin-top:12px;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:999px;border:1px solid rgba(11,61,145,0.2);background:linear-gradient(180deg,#ffffff,#f6f9fd);color:#0b3d91;font-weight:700;font-size:13px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease}
+.domain-more-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(11,61,145,0.12);background:#fff}
+
+.domain-details{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s cubic-bezier(.22,.9,.28,1),opacity .3s ease,margin-top .3s ease;padding-right:4px}
+.domain-details.open{max-height:420px;opacity:1;margin-top:12px}
+.domain-intro{margin:0 0 10px;color:#334155;font-size:14px;line-height:1.5}
+.domain-details ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.domain-details li{color:#3f4b59;font-size:13px;line-height:1.45}
+
 /* subtle hover lift */
 .domain-card:hover .card-surface{transform:translateY(-4px);box-shadow:0 18px 40px rgba(11,61,145,0.07)}
 
@@ -39,6 +48,7 @@
 @media (max-width:700px){
 	.domain-grid{grid-template-columns:1fr}
 	.media-img{height:220px}
+	.domain-details.open{max-height:520px}
 }
 
 /* Large screen: make cards wider and show exactly 3 columns */
@@ -117,6 +127,7 @@
 /* subtle hover lift */
 .domain-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,61,145,0.08)}
 .courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+.sample-courses h2{margin:0 0 18px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
 .course-card{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
 .course-card h3{color:#0b3d91}
 .meta{font-size:13px;color:#666}

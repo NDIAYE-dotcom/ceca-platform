@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa'
+import { FaFacebook, FaInstagram, FaLinkedin, FaUserShield } from 'react-icons/fa'
 import './Footer.css'
 
 export default function Footer(){
@@ -47,7 +47,12 @@ export default function Footer(){
 
       <div className="footer-bottom">
         <div className="container">
-          <p>© {new Date().getFullYear()} CECA-Solutions. Tous droits réservés.</p>
+          <div className="footer-bottom-inner">
+            <p>© {new Date().getFullYear()} CECA-Solutions. Tous droits réservés.</p>
+            <a href="/admin" className="footer-admin-link" title="Admin" aria-label="Accéder à l'espace admin">
+              <FaUserShield />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

@@ -35,7 +35,6 @@ export default function Login(){
         <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" required />
         <button className="btn" type="submit">Se connecter</button>
         {error && <div className="error">{error}</div>}
-        <div style={{marginTop:10}}>Pas de compte ? <Link to="/register">S'inscrire</Link></div>
       </form>
     </section>
   )

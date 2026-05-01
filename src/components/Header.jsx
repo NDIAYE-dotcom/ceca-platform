@@ -39,6 +39,7 @@ export default function Header(){
           <div className="nav-wrap">
             <Link to="/a-propos" className="nav-link highlight" onClick={closeMenu}>À propos</Link>
             <Link to="/catalogue" className="nav-link highlight" onClick={closeMenu}>Formations</Link>
+            <Link to="/contact" className="nav-link" onClick={closeMenu}>Contact</Link>
             <Link to="/elearning/mp-101" className="nav-link" onClick={closeMenu}>Espace e-learning</Link>
             {user ? (
               <>
@@ -46,7 +47,6 @@ export default function Header(){
                 <button onClick={()=>{ signOut(); closeMenu() }} className="btn small nav-signout">Déconnexion</button>
               </>
             ) : null}
-            <Link to="/admin" className="btn small nav-admin" onClick={closeMenu}>Admin</Link>
           </div>
         </nav>
       </div>
