@@ -204,7 +204,7 @@ export default function Formation(){
 
               <label className="field">
                 <span>Téléphone</span>
-                <input value={formData.phone} onChange={e=>setFormData(d=>({ ...d, phone: e.target.value }))} placeholder="+221 77 123 45 67" />
+                <input value={formData.phone} onChange={e=>setFormData(d=>({ ...d, phone: e.target.value }))} placeholder="+221 33 837 7143 / +221 77 512 30 76" />
               </label>
 
               <label className="field">

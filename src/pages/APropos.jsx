@@ -73,7 +73,7 @@ export default function APropos(){
             <h4>Contact</h4>
             <p><strong>Adresse:</strong> Keur Massar, Dakar, Sénégal</p>
             <p><strong>Email:</strong> <a href="mailto:ceconsultingafrique@gmail.com">ceconsultingafrique@gmail.com</a></p>
-            <p><strong>Téléphone:</strong> <a href="tel:+221338377143">+221 33 837 7143</a> / <a href="tel:77512307676">77 512 307 676</a></p>
+            <p><strong>Téléphone:</strong> 📞 <a href="tel:+221338377143">+221 33 837 7143</a> / <a href="tel:+221775123076">+221 77 512 30 76</a></p>
             <p><a href="/contact" className="btn">Nous contacter</a></p>
           </aside>
         </div>
