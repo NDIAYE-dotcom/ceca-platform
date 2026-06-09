@@ -183,6 +183,11 @@ export default function Accueil(){
         </div>
       </div>
 
+      <div className="container director-preview">
+        <h2>Mot du Directeur Général</h2>
+        <p>À l’heure où l’Afrique amorce des mutations stratégiques décisives, la modernisation de notre gouvernance publique et l’optimisation de nos institutions constituent le socle de notre souveraineté et de notre développement durable. <a href="/a-propos#mot-directeur">Lire la suite</a></p>
+      </div>
+
       <div className="container sample-courses">
         <h2>Offres de formation</h2>
         <div className="courses-grid">

@@ -78,6 +78,29 @@ export default function APropos(){
           </aside>
         </div>
       </div>
+
+      <div className="container director-section" id="mot-directeur">
+        <article className="director-message">
+          <h2>Mot du Directeur Général</h2>
+          <div className="director-content">
+            <p>Chers partenaires, Mesdames, Messieurs,</p>
+
+            <p>À l’heure où l’Afrique amorce des mutations stratégiques décisives, la modernisation de notre gouvernance publique et l’optimisation de nos institutions ne sont plus de simples options : elles constituent le socle de notre souveraineté et de notre développement durable.</p>
+
+            <p>C’est avec cette intime conviction que le Cabinet Experts Consulting Afrique (CECA) s’est donné pour mission d’accompagner les administrations publiques, les collectivités territoriales et les partenaires au développement vers les plus hauts standards de performance, d’économie et de transparence.</p>
+
+            <p>Notre crédo, « L’expertise au service de la performance publique », guide chacune de nos interventions. Qu’il s’agisse de la refonte et de la maîtrise des cadres de la commande publique, de l’audit de gouvernance, du développement institutionnel ou de la valorisation de notre capital humain, nous mobilisons une ingénierie de haut niveau, ancrée dans les réalités africaines et ouverte sur les meilleures pratiques internationales.</p>
+
+            <p>Au-delà de la simple expertise technique, nous croyons fermement à la co-construction et au renforcement des compétences locales. Notre ambition est de doter nos institutions des leviers nécessaires pour piloter des réformes transparentes, efficaces et créatrices de valeur pour nos territoires.</p>
+
+            <p>Faire le choix du CECA, c’est choisir un partenaire stratégique engagé, rigoureux et résolument tourné vers l’excellence managériale. Ensemble, bâtissons une action publique moderne, performante et digne de la confiance de nos concitoyens.</p>
+
+            <p>Je vous remercie pour votre confiance renouvelée.</p>
+
+            <p><strong>Elhadji Serigne MBAYE</strong><br />Directeur Général,<br />Cabinet Experts Consulting Afrique (CECA).<br />Consultant Formateur — Enseignant Associé à L'UCAD / L'UASZ / L'ENA du Sénégal.</p>
+          </div>
+        </article>
+      </div>
     </section>
   )
 }
