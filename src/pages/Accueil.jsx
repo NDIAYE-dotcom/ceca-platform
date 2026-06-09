@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { getFormations } from '../lib/formations'
 import CourseCard from '../components/CourseCard'
 import './Accueil.css'
+import DirectorBanner from '../components/DirectorBanner'
 import { useEffect } from 'react'
 import useInView from '../hooks/useInView'
 
@@ -174,6 +175,8 @@ export default function Accueil(){
       </div>
     </header>
 
+    <DirectorBanner />
+
       <div className="container domains">
         <h2>Domaines d'expertise</h2>
         <div className="domain-grid">
@@ -183,10 +186,7 @@ export default function Accueil(){
         </div>
       </div>
 
-      <div className="container director-preview">
-        <h2>Mot du Directeur Général</h2>
-        <p>À l’heure où l’Afrique amorce des mutations stratégiques décisives, la modernisation de notre gouvernance publique et l’optimisation de nos institutions constituent le socle de notre souveraineté et de notre développement durable. <a href="/a-propos#mot-directeur">Lire la suite</a></p>
-      </div>
+      
 
       <div className="container sample-courses">
         <h2>Offres de formation</h2>
