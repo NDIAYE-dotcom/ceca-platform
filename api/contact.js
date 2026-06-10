@@ -106,7 +106,7 @@ module.exports = async function handler(req, res) {
   }
 
   const toAddress = process.env.CONTACT_TO_EMAIL || 'ceconsultingafrique@gmail.com'
-  const fromAddress = process.env.FROM_EMAIL || process.env.SENDGRID_SENDER || toAddress
+  const fromAddress = 'ceconsultingafrique@gmail.com' // SendGrid verified sender
   const subjectLine = subject || `Contact via site: ${topic || 'Contact'}`
   const text = [
     `Nom: ${name}`,
