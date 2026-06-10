@@ -138,7 +138,14 @@ module.exports = async function handler(req, res) {
       })
     } catch (e) {
       warnings.push('sendgrid failed')
-      console.error('[api/contact] sendgrid error', e)
+      const sendgridError = e?.response?.body?.errors?.[0]?.message || e?.message || String(e)
+      console.error('[api/contact] sendgrid error', sendgridError)
+      return res.status(500).json({
+        ok: false,
+        delivered: false,
+        error: `SendGrid a refusé l'envoi: ${sendgridError}`,
+        warnings
+      })
     }
   }
 
@@ -160,6 +167,12 @@ module.exports = async function handler(req, res) {
     } catch (e) {
       warnings.push('smtp failed')
       console.error('[api/contact] smtp error', e)
+      return res.status(500).json({
+        ok: false,
+        delivered: false,
+        error: `SMTP a refusé l'envoi: ${e?.message || String(e)}`,
+        warnings
+      })
     }
   }
 
