@@ -7,6 +7,9 @@
 *{box-sizing:border-box}
 .app-root{min-height:100vh;display:flex;flex-direction:column}
 html,body,#root{height:100%}
+*{box-sizing:border-box}
+.app-root{min-height:100vh;display:flex;flex-direction:column}
+html,body,#root{height:100%}
 body{font-family:Inter, system-ui, -apple-system, 'Helvetica Neue', Arial;line-height:1.4;color:#111;margin:0;background:#fff}
 .container{max-width:var(--max-width);margin:0 auto;padding:0 16px}
 .page-content{flex:1}

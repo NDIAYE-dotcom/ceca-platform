@@ -5,140 +5,73 @@ import './CourseCard.css'
 
 function getIconKey(course){
   const text = `${course?.title || ''} ${course?.category || ''}`.toLowerCase()
-  if(text.includes('gouvernance') || text.includes('publique')) return 'government'
-  if(text.includes('partenariat') || text.includes('commande')) return 'procurement'
-  if(text.includes('leadership') || text.includes('management')) return 'leadership'
-  if(text.includes('fiscalit') || text.includes('finance') || text.includes('comptabilit')) return 'finance'
-  if(text.includes('projet') || text.includes('ong') || text.includes('bailleur')) return 'project'
-  if(text.includes('durabilit') || text.includes('environnement') || text.includes('rse')) return 'sustainability'
-  if(text.includes('banque') || text.includes('microfinance') || text.includes('financier')) return 'banking'
+  if(text.includes('gouvernance') || text.includes('publique') || text.includes('institution')) return 'government'
+  if(text.includes('commande') || text.includes('ppp') || text.includes('partenariat')) return 'procurement'
+  if(text.includes('management') || text.includes('leadership') || text.includes('stratég')) return 'leadership'
+  if(text.includes('finance') || text.includes('fiscalit') || text.includes('comptabilit')) return 'finance'
+  if(text.includes('projet') || text.includes('ong')) return 'project'
+  if(text.includes('bailleur') || text.includes('bailleurs') || text.includes('international')) return 'bailleur'
+  if(text.includes('collectivit') || text.includes('décentral') || text.includes('territorial')) return 'collectivity'
+  if(text.includes('environnement') || text.includes('durable') || text.includes('rse')) return 'sustainability'
+  if(text.includes('financier') || text.includes('bancaire') || text.includes('microfinance') || text.includes('banque')) return 'banking'
   if(text.includes('droit') || text.includes('ohada') || text.includes('juridique')) return 'legal'
   if(text.includes('transport') || text.includes('logistique') || text.includes('infrastructure')) return 'transport'
-  if(text.includes('entrepreneuriat') || text.includes('innovation') || text.includes('startup')) return 'entrepreneurship'
-  if(text.includes('ressources humaines') || text.includes('rh')) return 'hr'
-  if(text.includes('risque')) return 'risk'
+  if(text.includes('entrepreneuriat') || text.includes('innovation') || text.includes('digitale')) return 'entrepreneurship'
+  if(text.includes('ressources humaines') || text.includes('rh') || text.includes('transformation digitale')) return 'hr'
+  if(text.includes('risque') || text.includes('sécurisation') || text.includes('gestion des risques')) return 'risk'
   return 'government'
 }
 
 function FormationIcon({ iconKey }){
   const uid = useId().replace(/:/g, '_')
-  const gradId = `grad_${uid}`
-  const shadowId = `shadow_${uid}`
-
   const baseProps = { className: 'formation-icon', role: 'img', 'aria-hidden': 'true', viewBox: '0 0 64 64', xmlns: 'http://www.w3.org/2000/svg' }
 
-  const makeDefs = (start, end) => (
-    <defs>
-      <linearGradient id={gradId} x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0%" stopColor={start} />
-        <stop offset="100%" stopColor={end} />
-      </linearGradient>
-      <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="#000" floodOpacity="0.16" />
-      </filter>
-    </defs>
-  )
-
-  const render = (start, end, content) => (
+  // Render minimal SVG: no colored rectangle background, only the emoji/icon
+  const render = (start, end, emoji, label, bgColor) => (
     <svg {...baseProps}>
-      {makeDefs(start, end)}
-      <g filter={`url(#${shadowId})`}>
-        <rect x="6" y="8" width="52" height="40" rx="8" fill={`url(#${gradId})`} />
-      </g>
-      <g fill="#fff">
-        {content}
-      </g>
+      <circle cx="32" cy="32" r="28" fill={bgColor} />
+      <circle cx="32" cy="32" r="28" fill="none" stroke={start} strokeOpacity="0.08" strokeWidth="1" />
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize="36"
+        fontFamily="Tahoma, Geneva, sans-serif"
+      >
+        {emoji}
+      </text>
+      <title>{label}</title>
     </svg>
   )
 
-  switch(iconKey){
-    case 'procurement':
-      return render('#0b74ff', '#0353a4', (
-        <g>
-          <path d="M18 22h28v-6c0-3-3-5-6-5H24c-3 0-6 2-6 5v6z" opacity="0.98" />
-          <rect x="18" y="26" width="28" height="10" rx="2" opacity="0.95" />
-        </g>
-      ))
-    case 'leadership':
-      return render('#7c3aed', '#4f46e5', (
-        <g>
-          <circle cx="32" cy="22" r="8" opacity="0.98" />
-          <path d="M16 46c0-6 8-10 16-10s16 4 16 10" opacity="0.92" />
-        </g>
-      ))
-    case 'finance':
-      return render('#059669', '#047857', (
-        <g>
-          <ellipse cx="32" cy="22" rx="12" ry="6" opacity="0.98" />
-          <ellipse cx="32" cy="30" rx="12" ry="6" opacity="0.95" />
-          <ellipse cx="32" cy="38" rx="12" ry="6" opacity="0.92" />
-        </g>
-      ))
-    case 'project':
-      return render('#0284c7', '#0369a1', (
-        <g>
-          <circle cx="32" cy="30" r="10" opacity="0.98" />
-          <circle cx="32" cy="30" r="5" fill="rgba(255,255,255,0.12)" />
-        </g>
-      ))
-    case 'sustainability':
-      return render('#10b981', '#059669', (
-        <g>
-          <path d="M22 36c6-4 12-12 20-14-4 8-6 14-16 20" opacity="0.98" />
-        </g>
-      ))
-    case 'banking':
-      return render('#ad7c12', '#7c4a00', (
-        <g>
-          <path d="M12 42h40v4H12z" opacity="0.95" />
-          <path d="M12 22h40L32 8 12 22z" opacity="0.98" />
-        </g>
-      ))
-    case 'legal':
-      return render('#f97316', '#d97706', (
-        <g>
-          <rect x="18" y="30" width="28" height="6" rx="1" opacity="0.95" />
-          <path d="M30 18l8 12" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
-        </g>
-      ))
-    case 'transport':
-      return render('#06b6d4', '#0891b2', (
-        <g>
-          <rect x="10" y="26" width="36" height="16" rx="3" opacity="0.98" />
-          <circle cx="22" cy="44" r="4" fill="#fff" opacity="0.95" />
-          <circle cx="42" cy="44" r="4" fill="#fff" opacity="0.95" />
-        </g>
-      ))
-    case 'entrepreneurship':
-      return render('#ea580c', '#dc2626', (
-        <g>
-          <path d="M32 12l6 12-6 14-6-14 6-12z" opacity="0.98" />
-          <circle cx="32" cy="8" r="3" opacity="0.95" />
-        </g>
-      ))
-    case 'hr':
-      return render('#7dd3fc', '#0284c7', (
-        <g>
-          <circle cx="22" cy="28" r="6" opacity="0.98" />
-          <circle cx="42" cy="30" r="5" opacity="0.95" />
-          <path d="M12 46c6-6 28-6 40 0" opacity="0.9" />
-        </g>
-      ))
-    case 'risk':
-      return render('#ef4444', '#b91c1c', (
-        <g>
-          <path d="M32 10l14 8v12c0 8-6 12-14 12s-14-4-14-12V18l14-8z" opacity="0.98" />
-          <path d="M32 26v8" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
-        </g>
-      ))
-    default:
-      return render('#0b3d91', '#0b74ff', (
-        <g>
-          <path d="M12 40h40v4H12z" opacity="0.95" />
-          <path d="M12 22h40L32 8 12 22z" opacity="0.98" />
-        </g>
-      ))
+  const icons = {
+    government: { start: '#0b3d91', end: '#0b74ff', emoji: '🏛️', label: 'Gouvernance publique & finances publiques' },
+    procurement: { start: '#0f766e', end: '#14b8a6', emoji: '🤝', label: 'Commande publique & PPP' },
+    leadership: { start: '#6d28d9', end: '#4f46e5', emoji: '🎯', label: 'Management stratégique & leadership' },
+    finance: { start: '#047857', end: '#059669', emoji: '📊', label: 'Finance, fiscalité & comptabilité' },
+    project: { start: '#0369a1', end: '#0284c7', emoji: '📋', label: 'Gestion des projets & ONG' },
+    bailleur: { start: '#0f766e', end: '#2563eb', emoji: '🌍', label: 'Programmes financés par les bailleurs internationaux' },
+    collectivity: { start: '#7c2d12', end: '#ea580c', emoji: '🏘️', label: 'Collectivités territoriales & décentralisation' },
+    sustainability: { start: '#15803d', end: '#10b981', emoji: '🌱', label: 'Environnement, développement durable & RSE' },
+    banking: { start: '#854d0e', end: '#ca8a04', emoji: '🏦', label: 'Secteur financier, bancaire & microfinance' },
+    legal: { start: '#7c3aed', end: '#c026d3', emoji: '⚖️', label: 'Droit des affaires & sécurisation juridique (OHADA)' },
+    transport: { start: '#0e7490', end: '#06b6d4', emoji: '🚛', label: 'Transport, logistique & infrastructures' },
+    entrepreneurship: { start: '#c2410c', end: '#ea580c', emoji: '💡', label: 'Entrepreneuriat & innovation digitale' },
+    hr: { start: '#0f766e', end: '#22c55e', emoji: '👥', label: 'Ressources humaines & transformation digitale' },
+    risk: { start: '#b91c1c', end: '#ef4444', emoji: '🛡️', label: 'Fiscalité avancée & gestion des risques' }
   }
+
+  const entry = icons[iconKey] || icons.government
+
+  // Use the icon's start color to create a subtle translucent circular background.
+  // Append alpha to the hex color for translucency (CSS/SVG accepts 8-digit hex #RRGGBBAA).
+  const alphaHex = '22' // ~13% opacity
+  const bgColor = entry.start && entry.start.length === 7 ? `${entry.start}${alphaHex}` : `${entry.start}`
+
+  return (
+    render(entry.start, entry.end, entry.emoji, entry.label, bgColor)
+  )
 }
 
 export default function CourseCard({course}){

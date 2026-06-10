@@ -1,9 +1,22 @@
+require('dotenv').config()
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
+const nodemailer = require('nodemailer')
+let sgMail = null
+if (process.env.SENDGRID_API_KEY) {
+  try {
+    sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    console.log('[mail] SendGrid configured via SENDGRID_API_KEY')
+  } catch (e) {
+    console.warn('[mail] failed to load @sendgrid/mail, will fallback to SMTP if available')
+    sgMail = null
+  }
+}
 
 const USERS_FILE = path.join(__dirname, 'users.json')
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret'
@@ -24,6 +37,20 @@ function writeUsers(users){
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+// Configure mail transporter if SMTP settings are provided
+let mailTransporter = null
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  mailTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  })
+}
 
 app.get('/api/health', (req,res)=> res.json({ok:true}))
 
@@ -81,3 +108,69 @@ app.get('/api/me', authMiddleware, (req,res)=>{
 
 const PORT = process.env.PORT || 4000
 app.listen(PORT, ()=> console.log(`CECA server running on http://localhost:${PORT}`))
+
+// Contact endpoint: accepts { name, email, organisation, subject, topic, message }
+app.post('/api/contact', async (req, res) => {
+  const { name, email, organisation, subject, topic, message } = req.body || {}
+  console.log('[contact] incoming', { name, email, organisation, subject, topic, message: (message||'').slice(0,120) })
+  if (!name || !email || !message) return res.status(400).json({ error: 'name, email and message required' })
+
+  if (!mailTransporter) {
+    // Fallback: save message to a local JSON file so messages are not lost
+    try {
+      const MESSAGES_FILE = path.join(__dirname, 'messages.json')
+      let existing = []
+      try { existing = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8') || '[]') } catch(e){ existing = [] }
+      const entry = { id: Date.now().toString(), name, email, organisation, subject, topic, message, receivedAt: new Date().toISOString() }
+      existing.push(entry)
+      fs.writeFileSync(MESSAGES_FILE, JSON.stringify(existing, null, 2), 'utf8')
+      console.log('[contact] saved locally to', MESSAGES_FILE)
+      return res.json({ ok: true, saved: true, message: 'Mail server not configured. Message saved locally.' })
+    } catch (err) {
+      console.error('Error saving contact message locally:', err)
+      return res.status(500).json({ error: 'Mail server not configured and failed to save message locally.' })
+    }
+  }
+
+  const toAddress = process.env.CONTACT_TO_EMAIL || 'ceconsultingafrique@gmail.com'
+  const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_USER
+
+  const mailOptions = {
+    from: `${name} <${fromAddress}>`,
+    to: toAddress,
+    subject: subject || `Contact via site: ${topic || 'Contact'}`,
+    text: `Nom: ${name}\nEmail: ${email}\nOrganisation: ${organisation || ''}\nSujet: ${subject || ''}\nThème: ${topic || ''}\n\nMessage:\n${message}`,
+    html: `<p><strong>Nom:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Organisation:</strong> ${organisation || ''}</p><p><strong>Sujet:</strong> ${subject || ''}</p><p><strong>Thème:</strong> ${topic || ''}</p><hr/><p>${message.replace(/\n/g, '<br/>')}</p>`
+  }
+
+  try {
+    if (sgMail) {
+      // Use SendGrid API
+      await sgMail.send({ to: toAddress, from: fromAddress, subject: mailOptions.subject, text: mailOptions.text, html: mailOptions.html })
+      console.log('[contact] sent via SendGrid to', toAddress)
+      return res.json({ ok: true, message: 'Message envoyé via SendGrid.' })
+    } else if (mailTransporter) {
+      await mailTransporter.sendMail(mailOptions)
+      console.log('[contact] sent via SMTP to', toAddress)
+      return res.json({ ok: true, message: 'Message envoyé.' })
+    } else {
+      // Shouldn't reach here because earlier fallback handles missing transporter, but safe-guard
+      console.warn('[contact] no mail transporter available, falling back to save')
+    }
+  } catch (err) {
+    console.error('Error sending contact mail:', err)
+    return res.status(500).json({ error: 'Failed to send message.' })
+  }
+})
+
+// Dev helper: list saved messages (only if messages.json exists)
+app.get('/api/messages', (req, res) => {
+  const MESSAGES_FILE = path.join(__dirname, 'messages.json')
+  try {
+    const raw = fs.readFileSync(MESSAGES_FILE, 'utf8')
+    const data = JSON.parse(raw || '[]')
+    return res.json({ ok: true, messages: data })
+  } catch (e) {
+    return res.json({ ok: true, messages: [] })
+  }
+})

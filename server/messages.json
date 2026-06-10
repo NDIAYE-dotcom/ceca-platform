@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1781088625635",
+    "name": "Test",
+    "email": "test@example.com",
+    "message": "Bonjour test",
+    "receivedAt": "2026-06-10T10:50:25.635Z"
+  },
+  {
+    "id": "1781088628848",
+    "name": "Test",
+    "email": "test@example.com",
+    "message": "Bonjour test",
+    "receivedAt": "2026-06-10T10:50:28.849Z"
+  },
+  {
+    "id": "1781089114158",
+    "name": "UI Test",
+    "email": "ui@test.com",
+    "message": "Message from UI test",
+    "receivedAt": "2026-06-10T10:58:34.158Z"
+  }
+]

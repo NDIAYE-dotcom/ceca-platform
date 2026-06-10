@@ -30,12 +30,31 @@ export default function Contact(){
     setLoading(true)
 
     try{
-      // fallback to mailto
-      const mailto = `mailto:ceconsultingafrique@gmail.com?subject=${encodeURIComponent(form.subject || 'Contact via site')}&body=${encodeURIComponent(`Nom: ${form.name}\nOrganisation: ${form.organisation}\n\n${form.message}`)}`
-      window.location.href = mailto
-      setSuccess('Redirection vers votre client mail.')
+      // try sending via server API
+      const resp = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      })
+
+      if (resp.ok) {
+        setSuccess('Message envoyé. Nous vous répondrons bientôt.')
+      } else {
+        const text = await resp.text().catch(()=>null)
+        let data = null
+        try{ data = text ? JSON.parse(text) : null }catch(e){ data = null }
+        // if server not configured, fallback to mailto
+        if (resp.status === 501) {
+          const mailto = `mailto:ceconsultingafrique@gmail.com?subject=${encodeURIComponent(form.subject || 'Contact via site')}&body=${encodeURIComponent(`Nom: ${form.name}\nOrganisation: ${form.organisation}\n\n${form.message}`)}`
+          window.location.href = mailto
+          setSuccess('Redirection vers votre client mail.')
+        } else {
+          const serverMsg = data?.error || data?.message || text || `${resp.status} ${resp.statusText}`
+          setError(`Erreur serveur: ${serverMsg}`)
+        }
+      }
     }catch(e){
-      setError('Une erreur est survenue. Veuillez réessayer.')
+      setError(`Une erreur est survenue: ${e.message || e}`)
     } finally{
       setLoading(false)
     }
