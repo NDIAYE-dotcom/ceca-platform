@@ -37,12 +37,17 @@ export default function Contact(){
         body: JSON.stringify(form)
       })
 
+      const text = await resp.text().catch(()=>null)
+      let data = null
+      try{ data = text ? JSON.parse(text) : null }catch(e){ data = null }
+
       if (resp.ok) {
-        setSuccess('Message envoyé. Nous vous répondrons bientôt.')
+        if (data?.delivered) {
+          setSuccess(data?.message || 'Message envoyé. Nous vous répondrons bientôt.')
+        } else {
+          setError(data?.message || 'Message reçu, mais l’envoi e-mail n’est pas configuré.')
+        }
       } else {
-        const text = await resp.text().catch(()=>null)
-        let data = null
-        try{ data = text ? JSON.parse(text) : null }catch(e){ data = null }
         // if server not configured, fallback to mailto
         if (resp.status === 501) {
           const mailto = `mailto:ceconsultingafrique@gmail.com?subject=${encodeURIComponent(form.subject || 'Contact via site')}&body=${encodeURIComponent(`Nom: ${form.name}\nOrganisation: ${form.organisation}\n\n${form.message}`)}`

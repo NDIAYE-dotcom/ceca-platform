@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js')
+const nodemailer = require('nodemailer')
 
 let sgMail = null
 if (process.env.SENDGRID_API_KEY) {
@@ -14,6 +15,22 @@ if (process.env.SENDGRID_API_KEY) {
 
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+function buildSmtpTransport() {
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    return null
+  }
+
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  })
+}
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
@@ -102,6 +119,8 @@ module.exports = async function handler(req, res) {
     message
   ].join('\n')
 
+  const smtpTransport = buildSmtpTransport()
+
   if (sgMail) {
     try {
       await sgMail.send({
@@ -111,18 +130,46 @@ module.exports = async function handler(req, res) {
         text
       })
       console.log('[api/contact] email sent via SendGrid')
+      return res.status(200).json({
+        ok: true,
+        delivered: true,
+        message: 'Message envoyé par e-mail.',
+        warnings
+      })
     } catch (e) {
       warnings.push('sendgrid failed')
       console.error('[api/contact] sendgrid error', e)
     }
-  } else {
-    warnings.push('sendgrid not configured')
-    console.log('[api/contact] sendgrid not configured; skipping email')
   }
+
+  if (smtpTransport) {
+    try {
+      await smtpTransport.sendMail({
+        from: `${name} <${fromAddress}>`,
+        to: toAddress,
+        subject: `[Site Contact] ${subjectLine}`,
+        text
+      })
+      console.log('[api/contact] email sent via SMTP')
+      return res.status(200).json({
+        ok: true,
+        delivered: true,
+        message: 'Message envoyé par e-mail.',
+        warnings
+      })
+    } catch (e) {
+      warnings.push('smtp failed')
+      console.error('[api/contact] smtp error', e)
+    }
+  }
+
+  warnings.push('mail not configured')
+  console.log('[api/contact] mail not configured; saved only')
 
   return res.status(200).json({
     ok: true,
-    message: 'Message reçu. Nous vous répondrons bientôt.',
+    delivered: false,
+    message: 'Message reçu, mais l’envoi e-mail n’est pas configuré.',
     warnings
   })
 }
