@@ -27,6 +27,7 @@
 .sidebar-nav a:hover{background:rgba(255,255,255,0.08);color:#fff}
 .sidebar-nav a.active{background:#0b3d91;color:#fff;box-shadow:0 4px 12px rgba(11,61,145,0.35)}
 .sidebar-nav-icon{font-size:16px;width:20px;text-align:center;flex:none}
+.sidebar-nav-badge{margin-left:auto;background:#d9302a;color:#fff;font-size:11px;font-weight:800;line-height:1;padding:4px 7px;border-radius:999px;box-shadow:0 2px 6px rgba(217,48,42,0.4)}
 
 .sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1)}
 .sidebar-user{font-size:12px;color:#9fb3d9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { to: '/admin/parametres', label: 'Paramètres', icon: '⚙️' }
 ]
 
-export default function AdminSidebar(){
+export default function AdminSidebar({ apprenantsBadge = 0 }){
   const { user, signOut } = useAuth()
   const [open, setOpen] = useState(false)
 
@@ -41,6 +41,9 @@ export default function AdminSidebar(){
                 <NavLink to={item.to} end={item.end} onClick={closeSidebar} className={({isActive}) => isActive ? 'active' : ''}>
                   <span className="sidebar-nav-icon" aria-hidden="true">{item.icon}</span>
                   {item.label}
+                  {item.to === '/admin/apprenants' && apprenantsBadge > 0 && (
+                    <span className="sidebar-nav-badge">{apprenantsBadge}</span>
+                  )}
                 </NavLink>
               </li>
             ))}

@@ -73,6 +73,7 @@ module.exports = async function handler(req, res) {
   }
 
   const warnings = []
+  let savedToDb = false
 
   if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
     try {
@@ -93,6 +94,7 @@ module.exports = async function handler(req, res) {
         warnings.push('supabase insert failed')
         console.warn('[api/contact] supabase insert error', insert.error)
       } else {
+        savedToDb = true
         console.log('[api/contact] saved to supabase')
       }
     } catch (e) {
@@ -119,6 +121,9 @@ module.exports = async function handler(req, res) {
 
   const smtpTransport = buildSmtpTransport()
 
+  let delivered = false
+  let mailError = null
+
   if (sgMail) {
     try {
       await sgMail.send({
@@ -128,26 +133,13 @@ module.exports = async function handler(req, res) {
         text
       })
       console.log('[api/contact] email sent via SendGrid')
-      return res.status(200).json({
-        ok: true,
-        delivered: true,
-        message: 'Message envoyé par e-mail.',
-        warnings
-      })
+      delivered = true
     } catch (e) {
       warnings.push('sendgrid failed')
-      const sendgridError = e?.response?.body?.errors?.[0]?.message || e?.message || String(e)
-      console.error('[api/contact] sendgrid error', sendgridError)
-      return res.status(500).json({
-        ok: false,
-        delivered: false,
-        error: `SendGrid a refusé l'envoi: ${sendgridError}`,
-        warnings
-      })
+      mailError = e?.response?.body?.errors?.[0]?.message || e?.message || String(e)
+      console.error('[api/contact] sendgrid error', mailError)
     }
-  }
-
-  if (smtpTransport) {
+  } else if (smtpTransport) {
     try {
       await smtpTransport.sendMail({
         from: `${name} <${fromAddress}>`,
@@ -156,31 +148,38 @@ module.exports = async function handler(req, res) {
         text
       })
       console.log('[api/contact] email sent via SMTP')
-      return res.status(200).json({
-        ok: true,
-        delivered: true,
-        message: 'Message envoyé par e-mail.',
-        warnings
-      })
+      delivered = true
     } catch (e) {
       warnings.push('smtp failed')
-      console.error('[api/contact] smtp error', e)
-      return res.status(500).json({
-        ok: false,
-        delivered: false,
-        error: `SMTP a refusé l'envoi: ${e?.message || String(e)}`,
-        warnings
-      })
+      mailError = e?.message || String(e)
+      console.error('[api/contact] smtp error', mailError)
     }
+  } else {
+    warnings.push('mail not configured')
   }
 
-  warnings.push('mail not configured')
-  console.log('[api/contact] mail not configured; saved only')
+  if (delivered) {
+    return res.status(200).json({ ok: true, delivered: true, message: 'Message envoyé par e-mail.', warnings })
+  }
 
-  return res.status(200).json({
-    ok: true,
+  // The message is safely captured in the admin panel (Espace administration
+  // => Messages) even when the notification email fails or isn't configured
+  // (e.g. SendGrid quota exhausted) — that must not surface as an error to
+  // the visitor submitting the form, since the database row is now the
+  // actual source of truth, not the email.
+  if (savedToDb) {
+    return res.status(200).json({
+      ok: true,
+      delivered: false,
+      message: 'Message bien reçu. Notre équipe vous répondra rapidement.',
+      warnings
+    })
+  }
+
+  return res.status(500).json({
+    ok: false,
     delivered: false,
-    message: 'Message reçu, mais l’envoi e-mail n’est pas configuré.',
+    error: mailError ? `Message non enregistré : ${mailError}` : "Le message n'a pas pu être enregistré. Réessayez plus tard.",
     warnings
   })
 }

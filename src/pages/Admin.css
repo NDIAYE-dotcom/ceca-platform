@@ -1,5 +1,14 @@
 .admin-page{padding:12px}
 
+.admin-toast-stack{position:fixed;top:18px;right:18px;z-index:1000;display:flex;flex-direction:column;gap:10px;max-width:340px}
+.admin-toast{display:flex;align-items:flex-start;gap:10px;background:#0b3d91;color:#fff;padding:14px 16px;border-radius:12px;box-shadow:0 16px 36px rgba(6,20,48,0.28);text-decoration:none;animation:adminToastIn .25s ease}
+.admin-toast:hover{background:#092f70}
+.admin-toast-icon{font-size:18px;line-height:1}
+.admin-toast strong{display:block;font-size:13px;margin-bottom:2px}
+.admin-toast-body{display:block;font-size:12.5px;color:rgba(255,255,255,0.88);line-height:1.4}
+@keyframes adminToastIn{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media (prefers-reduced-motion: reduce){.admin-toast{animation:none}}
+
 /* No public site header renders in admin mode (see App.jsx) — the sidebar's fixed
    positioning normally offsets for the header's height, so zero that out here. */
 .app-root.admin-mode{--site-header-height:0px}

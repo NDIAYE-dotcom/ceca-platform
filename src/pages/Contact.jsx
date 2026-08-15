@@ -41,12 +41,11 @@ export default function Contact(){
       let data = null
       try{ data = text ? JSON.parse(text) : null }catch(e){ data = null }
 
-      if (resp.ok) {
-        if (data?.delivered) {
-          setSuccess(data?.message || 'Message envoyé. Nous vous répondrons bientôt.')
-        } else {
-          setError(data?.message || 'Message reçu, mais l’envoi e-mail n’est pas configuré.')
-        }
+      if (resp.ok && data?.ok !== false) {
+        // Any resp.ok means the message was captured (visible in Espace
+        // administration => Messages) — whether or not the notification
+        // email itself went out is a secondary detail, not a failure.
+        setSuccess(data?.message || 'Message envoyé. Nous vous répondrons bientôt.')
       } else {
         // if server not configured, fallback to mailto
         if (resp.status === 501) {

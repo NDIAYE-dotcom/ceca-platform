@@ -82,10 +82,47 @@ export default function Admin(){
   const location = useLocation()
   const navigate = useNavigate()
   const stats = useAdminStats(Boolean(user))
+  const [toasts, setToasts] = useState([])
+  const [unseenRegistrations, setUnseenRegistrations] = useState(0)
 
   // determine active admin subsection based on pathname
   const subpath = location.pathname.replace(/^\/admin\/?/, '')
   const section = subpath === '' ? 'dashboard' : subpath
+
+  // Global "new registrant" notification: lives here (not inside ApprenantsAdmin)
+  // so it fires no matter which admin section is currently open, not only when
+  // the admin happens to already be on the Apprenants page.
+  useEffect(()=>{
+    if(!isSupabaseEnabled) return
+    let channel
+    try{
+      channel = supabase.channel(`public:${REGISTRATIONS_TABLE}:admin-notify`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: REGISTRATIONS_TABLE }, (p) => {
+          const r = p?.new ?? p?.record
+          if(!r) return
+          const toastId = `${r.id || Date.now()}-${Math.random().toString(36).slice(2)}`
+          setToasts(prev => [...prev, { id: toastId, name: r.name, formation: r.formation_title }])
+          setTimeout(()=> setToasts(prev => prev.filter(t => t.id !== toastId)), 7000)
+          setUnseenRegistrations(prev => prev + 1)
+
+          if(typeof Notification !== 'undefined'){
+            if(Notification.permission === 'granted'){
+              new Notification('Nouvel inscrit — CECA', { body: `${r.name} vient de s'inscrire à « ${r.formation_title} »` })
+            } else if(Notification.permission !== 'denied'){
+              Notification.requestPermission()
+            }
+          }
+        })
+        .subscribe()
+    }catch(e){ console.warn('registrations realtime subscribe failed', e) }
+
+    return ()=>{ if(channel) try{ supabase.removeChannel(channel) }catch(e){} }
+  }, [])
+
+  // Clear the sidebar badge once the admin actually opens Apprenants
+  useEffect(()=>{
+    if(section === 'apprenants') setUnseenRegistrations(0)
+  }, [section])
 
   function renderSection(name){
     if(name.startsWith('entreprise/')){
@@ -169,8 +206,22 @@ export default function Admin(){
 
   return (
     <section className="container admin-page">
+      {toasts.length > 0 && (
+        <div className="admin-toast-stack">
+          {toasts.map(t => (
+            <Link to="/admin/apprenants" key={t.id} className="admin-toast">
+              <span className="admin-toast-icon" aria-hidden="true">🎉</span>
+              <span>
+                <strong>Nouvel inscrit</strong>
+                <span className="admin-toast-body">{t.name} — {t.formation}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+
       <div className="admin-layout">
-        <AdminSidebar />
+        <AdminSidebar apprenantsBadge={unseenRegistrations} />
 
         <main className="admin-main">
           <div className="admin-header">
