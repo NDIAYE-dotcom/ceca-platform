@@ -158,6 +158,13 @@ export default function Formation(){
               setSubmitting(false)
               if(saved){
                 setSuccess('Inscription enregistrée — un email de confirmation vous sera envoyé.')
+                // Best-effort: notify admin by email and send a confirmation to the registrant.
+                // Never blocks the registration itself if mail sending fails or is unconfigured.
+                fetch('/api/notify-registration', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(registration)
+                }).catch(e => console.warn('Registration notification failed', e))
                 // Notify other UI (admin list) that a registration was added
                 try{ window.dispatchEvent(new CustomEvent('ceca:registration:added', { detail: registration })) }catch(e){}
                 // Also write a short localStorage ping so other tabs can react

@@ -163,6 +163,62 @@ app.post('/api/contact', async (req, res) => {
   }
 })
 
+// Registration notification endpoint: notifies admin (and confirms to the
+// registrant) when someone signs up for a formation via Formation.jsx.
+// The registration row itself is written directly to Supabase by the client;
+// this endpoint only handles the email side, mirroring /api/contact.
+app.post('/api/notify-registration', async (req, res) => {
+  const { name, email, phone, organization, formation_title: formationTitle, payment_method: paymentMethod, notes } = req.body || {}
+  console.log('[notify-registration] incoming', { name, email, formationTitle })
+  if (!name || !email || !formationTitle) return res.status(400).json({ error: 'name, email and formation_title required' })
+
+  const toAddress = process.env.CONTACT_TO_EMAIL || 'ceconsultingafrique@gmail.com'
+  const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_USER
+
+  const adminMail = {
+    from: `${name} <${fromAddress}>`,
+    to: toAddress,
+    subject: `[Inscription] ${formationTitle} — ${name}`,
+    text: `Nom: ${name}\nEmail: ${email}\nTéléphone: ${phone || '—'}\nOrganisation: ${organization || '—'}\nMoyen de paiement: ${paymentMethod || '—'}\n${notes ? `Notes: ${notes}` : ''}`
+  }
+  const confirmMail = {
+    from: `CECA <${fromAddress}>`,
+    to: email,
+    subject: `Confirmation d'inscription — ${formationTitle}`,
+    text: `Bonjour ${name},\n\nNous confirmons la réception de votre inscription à la formation « ${formationTitle} ».\nNotre équipe reviendra vers vous prochainement avec les prochaines étapes.\n\nCordialement,\nL'équipe CECA`
+  }
+
+  if (!sgMail && !mailTransporter) {
+    try {
+      const REG_NOTIFY_FILE = path.join(__dirname, 'registration-notifications.json')
+      let existing = []
+      try { existing = JSON.parse(fs.readFileSync(REG_NOTIFY_FILE, 'utf8') || '[]') } catch (e) { existing = [] }
+      existing.push({ id: Date.now().toString(), name, email, phone, organization, formationTitle, paymentMethod, notes, receivedAt: new Date().toISOString() })
+      fs.writeFileSync(REG_NOTIFY_FILE, JSON.stringify(existing, null, 2), 'utf8')
+      console.log('[notify-registration] saved locally to', REG_NOTIFY_FILE)
+      return res.json({ ok: true, delivered: false, message: 'Mail server not configured. Notification saved locally.' })
+    } catch (err) {
+      console.error('Error saving registration notification locally:', err)
+      return res.status(500).json({ ok: false, error: 'Mail server not configured and failed to save notification locally.' })
+    }
+  }
+
+  try {
+    if (sgMail) {
+      await sgMail.send({ to: adminMail.to, from: fromAddress, subject: adminMail.subject, text: adminMail.text })
+      await sgMail.send({ to: confirmMail.to, from: fromAddress, subject: confirmMail.subject, text: confirmMail.text })
+    } else {
+      await mailTransporter.sendMail(adminMail)
+      await mailTransporter.sendMail(confirmMail)
+    }
+    console.log('[notify-registration] sent to', toAddress, 'and', email)
+    return res.json({ ok: true, delivered: true })
+  } catch (err) {
+    console.error('Error sending registration notification mail:', err)
+    return res.status(500).json({ ok: false, error: 'Failed to send notification.' })
+  }
+})
+
 // Dev helper: list saved messages (only if messages.json exists)
 app.get('/api/messages', (req, res) => {
   const MESSAGES_FILE = path.join(__dirname, 'messages.json')
