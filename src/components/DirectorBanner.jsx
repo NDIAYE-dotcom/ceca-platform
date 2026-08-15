@@ -9,7 +9,7 @@ export default function DirectorBanner(){
     <div className="director-banner" role="region" aria-label="Mot du Directeur Général">
       <div className="director-banner__inner">
         <div className="db-photo">
-          <img src="/img%20sm-01.png" alt="Elhadji Serigne MBAYE, Directeur Général de CECA" loading="lazy" />
+          <img src="/img-sm-01.jpg" alt="Elhadji Serigne MBAYE, Directeur Général de CECA" loading="lazy" />
         </div>
         <div className="db-content">
           <span className="db-quote-mark" aria-hidden="true">“</span>

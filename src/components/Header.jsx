@@ -25,7 +25,7 @@ export default function Header(){
       <div className="container header-inner">
         <div className="brand">
           <Link to="/">
-            <img src={encodeURI('/logo-ceca m-02-01.png')} alt="CECA-Solutions" className="site-logo" />
+            <img src="/logo-ceca-m-02-01.png" alt="CECA-Solutions" className="site-logo" />
           </Link>
         </div>
         <button

@@ -40,7 +40,7 @@ export default function APropos(){
         </div>
         <div className="hero-right">
           <div className="hero-image-frame">
-            <img src="/img%20sm-01.png" alt="CECA hero" />
+            <img src="/img-sm-01.jpg" alt="CECA hero" />
           </div>
         </div>
       </div>

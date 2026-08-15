@@ -17,11 +17,11 @@ export default function Catalogue(){
       <h1>Catalogue des formations</h1>
       <div className="formation-gallery">
         <div className="gallery-grid">
-          <div className="gallery-item"><img src="/Form-ceca1-01.png" alt="formation 1" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca1-01.png')} /></div>
-          <div className="gallery-item"><img src="/Form-ceca2-01.png" alt="formation 2" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca2-01.png')} /></div>
-          <div className="gallery-item"><img src="/Form-ceca3-01.png" alt="formation 3" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca3-01.png')} /></div>
-          <div className="gallery-item"><img src="/Form-ceca4-01.png" alt="formation 4" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca4-01.png')} /></div>
-          <div className="gallery-item big"><img src="/Form-ceca-01.png" alt="formation main" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca-01.png')} /></div>
+          <div className="gallery-item"><img src="/Form-ceca1-01.jpg" alt="formation 1" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca1-01.jpg')} /></div>
+          <div className="gallery-item"><img src="/Form-ceca2-01.jpg" alt="formation 2" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca2-01.jpg')} /></div>
+          <div className="gallery-item"><img src="/Form-ceca3-01.jpg" alt="formation 3" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca3-01.jpg')} /></div>
+          <div className="gallery-item"><img src="/Form-ceca4-01.jpg" alt="formation 4" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca4-01.jpg')} /></div>
+          <div className="gallery-item big"><img src="/Form-ceca-01.jpg" alt="formation main" loading="lazy" decoding="async" onClick={()=>setLightbox('/Form-ceca-01.jpg')} /></div>
         </div>
       </div>
       

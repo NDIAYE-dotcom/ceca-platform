@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getFormationById } from '../lib/formations'
-import { generateCertificate } from '../utils/certificate'
 import { useAuth } from '../context/AuthContext'
 import { supabase, isSupabaseEnabled } from '../lib/supabase'
 import './Elearning.css'
@@ -52,7 +51,13 @@ export default function Elearning(){
     localStorage.setItem(`progress_${id}`, String(p))
   }
 
-  function handleGenerate(){
+  // jsPDF (plus its unused-but-bundled html2canvas dependency) is only
+  // needed for this one button — loading it dynamically instead of at the
+  // top of the file keeps it out of the page's initial JS download for the
+  // far more common case of someone just watching the video without ever
+  // generating a certificate.
+  async function handleGenerate(){
+    const { generateCertificate } = await import('../utils/certificate')
     const blob = generateCertificate({name, courseTitle: course.title, date: new Date().toLocaleDateString()})
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')

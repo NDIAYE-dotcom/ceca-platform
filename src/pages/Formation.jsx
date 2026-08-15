@@ -31,7 +31,7 @@ export default function Formation(){
         <div className="hero-slides">
           {
             (function(){
-              const defaults = ['/marchepublic-01.png','/Ressources-Humaine-Management-01.png','/Finances-publiques-01.png']
+              const defaults = ['/marchepublic-01.jpg','/Ressources-Humaine-Management-01.jpg','/Finances-publiques-01.jpg']
               const imgs = course.image ? [course.image, ...defaults] : defaults
               return imgs.map((src, i) => (
                 <img key={i} src={src} alt="" className="hero-slide" style={{ animationDelay: `${i * 4}s` }} />

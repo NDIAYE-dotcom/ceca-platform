@@ -12,7 +12,7 @@ const DOMAINS = [
     id: 'formation-haut-niveau',
     title: 'Formation de haut niveau',
     desc: 'Ingénierie pédagogique sur mesure, gouvernance, leadership, transformation digitale et certifications spécialisées.',
-    img: '/Digitalisation-Transformation-numerique-01.png',
+    img: '/Digitalisation-Transformation-numerique-01.jpg',
     intro: "Ce pôle vise à renforcer le capital humain par des programmes d'excellence adaptés aux défis contemporains du secteur public et privé.",
     details: [
       'Ingénierie pédagogique sur mesure : conception de modules alignés sur les besoins spécifiques des cadres dirigeants et des hauts fonctionnaires.',
@@ -25,7 +25,7 @@ const DOMAINS = [
     id: 'conseil-strategique',
     title: 'Conseil stratégique',
     desc: 'Pilotage de la performance, modernisation de l’action publique, accompagnement au changement et planification stratégique.',
-    img: '/Gouvernance-01.png',
+    img: '/Gouvernance-01.jpg',
     intro: 'Un accompagnement de proximité pour transformer les visions en résultats concrets et durables.',
     details: [
       'Pilotage de la performance : définition d’indicateurs clés (KPI) et mise en place de tableaux de bord prospectifs.',
@@ -38,7 +38,7 @@ const DOMAINS = [
     id: 'audit-controle',
     title: 'Audit & contrôle',
     desc: 'Audit de la commande publique, lutte contre la corruption, audit financier et contrôle de gestion.',
-    img: '/Audit-institutionnel-01.png',
+    img: '/Audit-institutionnel-01.jpg',
     intro: 'Garantir la conformité, l’intégrité des processus et l’optimisation des ressources.',
     details: [
       'Audit de la commande publique : vérification de la transparence, de l’efficacité et de la régularité des procédures de passation de marchés.',
@@ -51,7 +51,7 @@ const DOMAINS = [
     id: 'etude-recherche',
     title: 'Étude & recherche appliquée',
     desc: 'Études de faisabilité et d’impact, recherche sur l’inclusion, veille stratégique, sondages et enquêtes de satisfaction.',
-    img: '/marchepublic-01.png',
+    img: '/marchepublic-01.jpg',
     intro: 'Produire une donnée fiable pour éclairer la décision et anticiper les mutations.',
     details: [
       'Études de faisabilité et d’impact : analyse rigoureuse des projets avant lancement et évaluation de leurs retombées socio-économiques.',
