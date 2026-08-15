@@ -15,6 +15,7 @@ import Contact from './pages/Contact'
 const Admin = React.lazy(() => import('./pages/Admin'))
 import Login from './pages/Login'
 import Register from './pages/Register'
+import SetPassword from './pages/SetPassword'
 import { AuthProvider } from './context/AuthContext'
 
 export default function App(){
@@ -46,6 +47,7 @@ export default function App(){
           <Route path="/admin/parametres" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/set-password" element={<SetPassword />} />
           </Routes>
         </div>
       </main>

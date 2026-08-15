@@ -19,6 +19,8 @@ export default function ApprenantsAdmin(){
   const [deletingId, setDeletingId] = useState(null)
   const [selectedItem, setSelectedItem] = useState(null)
   const [query, setQuery] = useState('')
+  const [accessState, setAccessState] = useState({}) // id -> 'sending' | 'done' | 'error'
+  const [accessMsg, setAccessMsg] = useState({}) // id -> message shown after the attempt
 
   async function load(){
     setLoading(true)
@@ -90,6 +92,29 @@ export default function ApprenantsAdmin(){
     // Supabase not configured: fall back to removing from the local list only.
     setItems(prev => (prev || []).filter(r => r.id !== id))
     setDeletingId(null)
+  }
+
+  async function handleCreateAccess(it){
+    setAccessState(s => ({ ...s, [it.id]: 'sending' }))
+    setAccessMsg(s => ({ ...s, [it.id]: null }))
+    try{
+      const resp = await fetch('/api/create-learner-access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: it.email, name: it.name, redirectTo: `${window.location.origin}/set-password` })
+      })
+      const data = await resp.json().catch(()=>null)
+      if(!resp.ok || data?.ok === false){
+        setAccessState(s => ({ ...s, [it.id]: 'error' }))
+        setAccessMsg(s => ({ ...s, [it.id]: data?.error || 'Échec de la création de l’accès.' }))
+        return
+      }
+      setAccessState(s => ({ ...s, [it.id]: 'done' }))
+      setAccessMsg(s => ({ ...s, [it.id]: data?.delivered ? 'Email envoyé avec le lien d’accès.' : (data?.link ? 'Email non envoyé — copiez le lien à lui transmettre.' : 'Accès créé.') }))
+    }catch(e){
+      setAccessState(s => ({ ...s, [it.id]: 'error' }))
+      setAccessMsg(s => ({ ...s, [it.id]: String(e?.message || e) }))
+    }
   }
 
   function downloadCSV(){
@@ -168,9 +193,21 @@ export default function ApprenantsAdmin(){
             <div className="apprenant-main">
               <div className="apprenant-name">{it.name} <span className="muted">• {it.email}</span></div>
               <div className="apprenant-meta">Formation : <strong>{it.formation_title || '—'}</strong> — {it.created_at ? new Date(it.created_at).toLocaleString('fr-FR') : '—'}</div>
+              {accessMsg[it.id] && (
+                <div className={accessState[it.id] === 'error' ? 'apprenant-access-msg apprenant-access-msg--error' : 'apprenant-access-msg'}>
+                  {accessMsg[it.id]}
+                </div>
+              )}
             </div>
             <div className="apprenant-actions">
               <button className="admin-btn admin-btn-view" onClick={()=>setSelectedItem(it)}>Détails</button>
+              <button
+                className="admin-btn admin-btn-edit"
+                disabled={accessState[it.id] === 'sending'}
+                onClick={()=>handleCreateAccess(it)}
+              >
+                {accessState[it.id] === 'sending' ? 'Envoi…' : accessState[it.id] === 'done' ? 'Renvoyer l’accès' : 'Créer l’accès'}
+              </button>
               <button className="admin-btn admin-btn-delete" disabled={deletingId===it.id} onClick={()=>handleDelete(it.id)}>Supprimer</button>
             </div>
           </div>

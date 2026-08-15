@@ -6,6 +6,8 @@
 .apprenant-main{flex:1;min-width:0}
 .apprenant-name{font-weight:700;color:#0f172a}
 .apprenant-meta{font-size:13px;color:var(--muted);margin-top:4px}
+.apprenant-access-msg{font-size:12.5px;color:#166534;margin-top:6px}
+.apprenant-access-msg--error{color:#b91c1c}
 .apprenant-actions{display:flex;gap:8px;flex:none}
 
 @media (max-width:640px){

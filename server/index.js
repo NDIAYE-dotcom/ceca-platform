@@ -219,6 +219,74 @@ app.post('/api/notify-registration', async (req, res) => {
   }
 })
 
+// Creates (or resets access for) a learner account so someone who filled the
+// formation registration form can log into the Espace e-learning, without
+// needing SUPABASE_SERVICE_ROLE_KEY hardcoded here — this only works when
+// that var happens to be set in the local environment (it normally isn't;
+// this endpoint mainly runs for real via api/create-learner-access.js on
+// Vercel, this local route exists so the dev proxy has something to hit).
+app.post('/api/create-learner-access', async (req, res) => {
+  const SUPABASE_URL = process.env.SUPABASE_URL
+  const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    return res.status(500).json({ ok: false, error: "Supabase admin (SUPABASE_SERVICE_ROLE_KEY) n'est pas configuré en local." })
+  }
+
+  const { email: rawEmail, name, redirectTo } = req.body || {}
+  const email = String(rawEmail || '').trim().toLowerCase()
+  if (!email) return res.status(400).json({ error: 'email required' })
+
+  try {
+    const { createClient } = require('@supabase/supabase-js')
+    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { autoRefreshToken: false, persistSession: false } })
+
+    let alreadyExisted = false
+    let linkData = null
+    const invite = await admin.auth.admin.generateLink({ type: 'invite', email, options: { data: { name }, redirectTo } })
+    if (invite.error) {
+      if (/already been registered|already registered/i.test(invite.error.message || '')) {
+        alreadyExisted = true
+        const recovery = await admin.auth.admin.generateLink({ type: 'recovery', email, options: { redirectTo } })
+        if (recovery.error) return res.status(500).json({ ok: false, error: recovery.error.message })
+        linkData = recovery.data
+      } else {
+        return res.status(500).json({ ok: false, error: invite.error.message })
+      }
+    } else {
+      linkData = invite.data
+    }
+
+    const userId = linkData?.user?.id
+    const actionLink = linkData?.properties?.action_link
+    if (userId) {
+      try { await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: 'learner' }) } catch (e) { console.warn('[create-learner-access] profile upsert failed', e) }
+    }
+
+    let delivered = false
+    let mailError = null
+    const fromAddress = process.env.FROM_EMAIL || process.env.SMTP_USER
+    const subject = alreadyExisted ? "Réinitialisation de votre accès à l'Espace e-learning CECA" : "Votre accès à l'Espace e-learning CECA"
+    const text = `Bonjour ${name || ''},\n\n${alreadyExisted ? 'Voici un lien pour redéfinir votre mot de passe et accéder' : 'Un accès vous a été créé pour accéder'} à l'Espace e-learning CECA.\n\n${actionLink || ''}\n\nCordialement,\nL'équipe CECA`
+    try {
+      if (sgMail) {
+        await sgMail.send({ to: email, from: fromAddress, subject, text })
+        delivered = true
+      } else if (mailTransporter) {
+        await mailTransporter.sendMail({ from: `CECA <${fromAddress}>`, to: email, subject, text })
+        delivered = true
+      }
+    } catch (e) {
+      mailError = e?.message || String(e)
+      console.error('[create-learner-access] mail error', mailError)
+    }
+
+    return res.json({ ok: true, delivered, link: actionLink, mailError, alreadyExisted })
+  } catch (err) {
+    console.error('[create-learner-access] error', err)
+    return res.status(500).json({ ok: false, error: err?.message || String(err) })
+  }
+})
+
 // Dev helper: list saved messages (only if messages.json exists)
 app.get('/api/messages', (req, res) => {
   const MESSAGES_FILE = path.join(__dirname, 'messages.json')
