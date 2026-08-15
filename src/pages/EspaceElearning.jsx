@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getFormations } from '../lib/formations'
 import FormationIcon, { getIconKey } from '../components/FormationIcon'
+import { useAuth } from '../context/AuthContext'
+import { supabase, isSupabaseEnabled } from '../lib/supabase'
 import './EspaceElearning.css'
 
+const REGISTRATIONS_TABLE = import.meta.env.VITE_REGISTRATIONS_TABLE || 'registrations'
+
 export default function EspaceElearning(){
+  const { user } = useAuth()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -14,11 +19,24 @@ export default function EspaceElearning(){
       const data = await getFormations()
       // getFormations() already excludes unavailable formations; e-learning
       // visibility is a separate admin-controlled toggle on top of that.
-      const visible = data.filter(c => c.elearning_enabled !== false)
+      let visible = data.filter(c => c.elearning_enabled !== false)
+
+      // A learner only sees formations they're actually registered for
+      // (matched by email against the registrations table) — same rule
+      // enforced when actually opening a course, kept in sync here so the
+      // hub doesn't list cards that would just say "accès non autorisé".
+      if(user?.role === 'learner' && user?.email && isSupabaseEnabled){
+        try{
+          const { data: regs } = await supabase.from(REGISTRATIONS_TABLE).select('formation_id').ilike('email', user.email)
+          const enrolledIds = new Set((regs || []).map(r => String(r.formation_id)))
+          visible = visible.filter(c => enrolledIds.has(String(c.id)))
+        }catch(e){ /* lookup failed — leave the unfiltered list rather than block the page */ }
+      }
+
       if(mounted){ setCourses(visible); setLoading(false) }
     })()
     return ()=>{ mounted = false }
-  },[])
+  },[user?.email, user?.role])
 
   return (
     <section className="container espace-elearning">
@@ -26,7 +44,13 @@ export default function EspaceElearning(){
       <p className="muted">Choisissez une formation pour accéder à ses cours, supports et quiz en ligne. Une connexion est requise.</p>
 
       {loading && <p className="muted">Chargement…</p>}
-      {!loading && courses.length === 0 && <p className="muted">Aucune formation n'est disponible en e-learning pour le moment.</p>}
+      {!loading && courses.length === 0 && (
+        <p className="muted">
+          {user?.role === 'learner'
+            ? "Vous n'êtes inscrit(e) à aucune formation en e-learning pour le moment."
+            : "Aucune formation n'est disponible en e-learning pour le moment."}
+        </p>
+      )}
 
       <div className="elearning-grid">
         {courses.map(c => (

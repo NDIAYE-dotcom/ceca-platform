@@ -1,14 +1,43 @@
 import React, {useState, useEffect} from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { getFormationById } from '../lib/formations'
 import { generateCertificate } from '../utils/certificate'
+import { useAuth } from '../context/AuthContext'
+import { supabase, isSupabaseEnabled } from '../lib/supabase'
 import './Elearning.css'
 import Classroom from '../components/Classroom'
 
+const REGISTRATIONS_TABLE = import.meta.env.VITE_REGISTRATIONS_TABLE || 'registrations'
+
 export default function Elearning(){
   const {id} = useParams()
+  const { user } = useAuth()
   const [course, setCourse] = useState(null)
   useEffect(()=>{ let mounted = true; (async ()=>{ const f = await getFormationById(id); if(mounted) setCourse(f) })(); return ()=>{ mounted = false } },[id])
+
+  // Being logged in as a learner only proves identity, not that this specific
+  // course was purchased/registered for — check the registrations table
+  // (matched by email, since that's what the registration form captures)
+  // before letting a learner into a course they never signed up for.
+  const [enrollment, setEnrollment] = useState('checking') // 'checking' | 'allowed' | 'denied'
+  useEffect(()=>{
+    let mounted = true
+    async function checkEnrollment(){
+      if(!id) return
+      if(user?.role === 'admin' || user?.role === 'instructor'){ if(mounted) setEnrollment('allowed'); return }
+      if(!isSupabaseEnabled || !user?.email){ if(mounted) setEnrollment('allowed'); return }
+      try{
+        const { data, error } = await supabase.from(REGISTRATIONS_TABLE).select('id').eq('formation_id', id).ilike('email', user.email).limit(1)
+        if(!mounted) return
+        setEnrollment(!error && Array.isArray(data) && data.length > 0 ? 'allowed' : 'denied')
+      }catch(e){
+        if(mounted) setEnrollment('denied')
+      }
+    }
+    checkEnrollment()
+    return ()=>{ mounted = false }
+  },[id, user?.email, user?.role])
+
   const [name, setName] = useState('Apprenant')
   const [progress, setProgress] = useState(0)
   const [quizPassed, setQuizPassed] = useState(false)
@@ -33,8 +62,15 @@ export default function Elearning(){
     URL.revokeObjectURL(url)
   }
 
-  if(course === null) return <div className="container">Chargement…</div>
+  if(course === null || enrollment === 'checking') return <div className="container">Chargement…</div>
   if(!course) return <div className="container">Formation introuvable</div>
+  if(enrollment === 'denied') return (
+    <div className="container elearning">
+      <h1>Accès non autorisé</h1>
+      <p className="muted">Vous n'êtes pas inscrit(e) à la formation « {course.title} ». Contactez l'administration si vous pensez qu'il s'agit d'une erreur.</p>
+      <Link to="/elearning" className="btn">Retour à l'Espace e-learning</Link>
+    </div>
+  )
 
   return (
     <section className="container elearning">
