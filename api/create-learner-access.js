@@ -49,6 +49,35 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ ok: false, error: "Supabase admin (SUPABASE_SERVICE_ROLE_KEY) n'est pas configuré côté serveur." })
   }
 
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
+
+  // This endpoint uses the service-role key to create accounts and set
+  // roles — without an admin check anyone on the internet could call it
+  // directly, including with an existing user's email (e.g. the admin's
+  // own, which is public knowledge on the site). That would silently
+  // upsert profiles.role = 'learner' onto that account below and lock a
+  // real admin out of their own panel. Require a valid session belonging
+  // to an admin before doing anything else.
+  const authHeader = req.headers['authorization'] || ''
+  const callerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+  if (!callerToken) {
+    return res.status(401).json({ ok: false, error: 'Authentification requise.' })
+  }
+  const { data: callerData, error: callerError } = await admin.auth.getUser(callerToken)
+  if (callerError || !callerData?.user) {
+    return res.status(401).json({ ok: false, error: 'Session invalide.' })
+  }
+  const { data: callerProfile, error: callerProfileError } = await admin
+    .from('profiles')
+    .select('role')
+    .eq('id', callerData.user.id)
+    .maybeSingle()
+  if (callerProfileError || callerProfile?.role !== 'admin') {
+    return res.status(403).json({ ok: false, error: 'Réservé aux administrateurs.' })
+  }
+
   const payload = getPayload(req)
   if (payload === null) {
     return res.status(400).json({ error: 'Invalid JSON' })
@@ -61,10 +90,6 @@ module.exports = async function handler(req, res) {
   if (!email) {
     return res.status(400).json({ error: 'email required' })
   }
-
-  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  })
 
   let linkData = null
   let alreadyExisted = false
@@ -109,7 +134,14 @@ module.exports = async function handler(req, res) {
 
   if (userId) {
     try {
-      await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: 'learner' })
+      // Belt-and-suspenders alongside the admin check above: never downgrade
+      // an existing admin/instructor account to 'learner' via this endpoint,
+      // in case it's ever called for an email that already has an elevated role.
+      const { data: existingProfile } = await admin.from('profiles').select('role').eq('id', userId).maybeSingle()
+      const nextRole = (existingProfile?.role === 'admin' || existingProfile?.role === 'instructor')
+        ? existingProfile.role
+        : 'learner'
+      await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: nextRole })
     } catch (e) {
       console.warn('[api/create-learner-access] profile upsert failed', e)
     }

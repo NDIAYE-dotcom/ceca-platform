@@ -110,6 +110,15 @@ const PORT = process.env.PORT || 4000
 app.listen(PORT, ()=> console.log(`CECA server running on http://localhost:${PORT}`))
 
 // Contact endpoint: accepts { name, email, organisation, subject, topic, message }
+function escapeHtml(value){
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 app.post('/api/contact', async (req, res) => {
   const { name, email, organisation, subject, topic, message } = req.body || {}
   console.log('[contact] incoming', { name, email, organisation, subject, topic, message: (message||'').slice(0,120) })
@@ -140,7 +149,7 @@ app.post('/api/contact', async (req, res) => {
     to: toAddress,
     subject: subject || `Contact via site: ${topic || 'Contact'}`,
     text: `Nom: ${name}\nEmail: ${email}\nOrganisation: ${organisation || ''}\nSujet: ${subject || ''}\nThème: ${topic || ''}\n\nMessage:\n${message}`,
-    html: `<p><strong>Nom:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Organisation:</strong> ${organisation || ''}</p><p><strong>Sujet:</strong> ${subject || ''}</p><p><strong>Thème:</strong> ${topic || ''}</p><hr/><p>${message.replace(/\n/g, '<br/>')}</p>`
+    html: `<p><strong>Nom:</strong> ${escapeHtml(name)}</p><p><strong>Email:</strong> ${escapeHtml(email)}</p><p><strong>Organisation:</strong> ${escapeHtml(organisation)}</p><p><strong>Sujet:</strong> ${escapeHtml(subject)}</p><p><strong>Thème:</strong> ${escapeHtml(topic)}</p><hr/><p>${escapeHtml(message).replace(/\n/g, '<br/>')}</p>`
   }
 
   try {
@@ -240,6 +249,17 @@ app.post('/api/create-learner-access', async (req, res) => {
     const { createClient } = require('@supabase/supabase-js')
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { autoRefreshToken: false, persistSession: false } })
 
+    // Same admin-only gate as api/create-learner-access.js — see that file
+    // for why this matters (unauthenticated callers could otherwise
+    // downgrade an existing admin account to 'learner' by email).
+    const authHeader = req.headers['authorization'] || ''
+    const callerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!callerToken) return res.status(401).json({ ok: false, error: 'Authentification requise.' })
+    const { data: callerData, error: callerError } = await admin.auth.getUser(callerToken)
+    if (callerError || !callerData?.user) return res.status(401).json({ ok: false, error: 'Session invalide.' })
+    const { data: callerProfile, error: callerProfileError } = await admin.from('profiles').select('role').eq('id', callerData.user.id).maybeSingle()
+    if (callerProfileError || callerProfile?.role !== 'admin') return res.status(403).json({ ok: false, error: 'Réservé aux administrateurs.' })
+
     let alreadyExisted = false
     let linkData = null
     const invite = await admin.auth.admin.generateLink({ type: 'invite', email, options: { data: { name }, redirectTo } })
@@ -263,7 +283,11 @@ app.post('/api/create-learner-access', async (req, res) => {
       ? `${redirectTo}?token_hash=${encodeURIComponent(hashedToken)}&type=${verifyType}`
       : linkData?.properties?.action_link
     if (userId) {
-      try { await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: 'learner' }) } catch (e) { console.warn('[create-learner-access] profile upsert failed', e) }
+      try {
+        const { data: existingProfile } = await admin.from('profiles').select('role').eq('id', userId).maybeSingle()
+        const nextRole = (existingProfile?.role === 'admin' || existingProfile?.role === 'instructor') ? existingProfile.role : 'learner'
+        await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: nextRole })
+      } catch (e) { console.warn('[create-learner-access] profile upsert failed', e) }
     }
 
     let delivered = false

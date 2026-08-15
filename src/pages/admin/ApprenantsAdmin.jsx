@@ -100,9 +100,16 @@ export default function ApprenantsAdmin(){
     setAccessMsg(s => ({ ...s, [it.id]: null }))
     setAccessLink(s => ({ ...s, [it.id]: null }))
     try{
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData?.session?.access_token
+      if(!accessToken){
+        setAccessState(s => ({ ...s, [it.id]: 'error' }))
+        setAccessMsg(s => ({ ...s, [it.id]: 'Session expirée — reconnectez-vous.' }))
+        return
+      }
       const resp = await fetch('/api/create-learner-access', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
         body: JSON.stringify({ email: it.email, name: it.name, redirectTo: `${window.location.origin}/set-password` })
       })
       const data = await resp.json().catch(()=>null)
