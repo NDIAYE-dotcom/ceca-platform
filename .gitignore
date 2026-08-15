@@ -7,3 +7,4 @@ npm-install.log
 .DS_Store
 *.log
 server/registration-notifications.json
+.vercel

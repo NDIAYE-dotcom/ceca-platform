@@ -23,7 +23,7 @@
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .contact-form .field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#334155}
-.contact-form input,.contact-form textarea,.contact-form select{font:inherit;font-weight:400;padding:11px 13px;border:1px solid #e2e8f0;border-radius:10px;color:#0f172a;transition:border-color .2s ease,box-shadow .2s ease}
+.contact-form input,.contact-form textarea,.contact-form select{font-family:inherit;font-size:16px;font-weight:400;padding:11px 13px;border:1px solid #e2e8f0;border-radius:10px;color:#0f172a;transition:border-color .2s ease,box-shadow .2s ease}
 .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus{outline:none;border-color:#0b3d91;box-shadow:0 0 0 3px rgba(11,61,145,0.12)}
 .contact-form textarea{min-height:150px;resize:vertical}
 

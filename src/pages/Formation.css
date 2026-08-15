@@ -87,7 +87,7 @@ aside{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
 .registration-form .form-title{margin:0 0 6px;font-size:18px;color:#fff}
 .registration-form .field{display:flex;flex-direction:column;gap:6px}
 .registration-form .field span{font-size:13px;color:rgba(255,255,255,0.9)}
-.registration-form input,.registration-form select,.registration-form textarea{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);font-size:14px;color:#fff;transition:border-color .2s ease,background-color .2s ease}
+.registration-form input,.registration-form select,.registration-form textarea{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);font-size:16px;color:#fff;transition:border-color .2s ease,background-color .2s ease}
 .registration-form input:focus,.registration-form select:focus,.registration-form textarea:focus{outline:none;border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1)}
 .registration-form input::placeholder,.registration-form textarea::placeholder{color:rgba(255,255,255,0.6)}
 .registration-form textarea{min-height:78px;resize:vertical}
