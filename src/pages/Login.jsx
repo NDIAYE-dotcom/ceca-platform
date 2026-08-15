@@ -10,6 +10,8 @@ export default function Login(){
   const [error, setError] = useState(null)
   const nav = useNavigate()
   const location = useLocation()
+  const from = location.state?.from || ''
+  const hideRegister = from.startsWith('/admin') || from.startsWith('/elearning')
 
   async function handleSubmit(e){
     e.preventDefault()
@@ -35,7 +37,7 @@ export default function Login(){
         <button className="btn" type="submit">Se connecter</button>
         {error && <div className="error">{error}</div>}
       </form>
-      <p>Pas encore de compte ? <Link to="/register">S'inscrire</Link></p>
+      {!hideRegister && <p>Pas encore de compte ? <Link to="/register">S'inscrire</Link></p>}
     </section>
   )
 }

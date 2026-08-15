@@ -211,9 +211,13 @@
 	.hero-features li:after{left:8px;font-size:12px}
 }
 
-.btn.cta{background:#d9302a;color:#ffffff;padding:14px 22px;border-radius:28px;font-weight:700;border:none;box-shadow:0 8px 22px rgba(217,48,42,0.14);transition:transform .18s ease,box-shadow .18s ease,background-color .18s}
-.btn.cta:hover{background:#b32721;transform:translateY(-2px);box-shadow:0 18px 36px rgba(179,39,33,0.14)}
-.btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;padding:12px 16px;border-radius:8px}
+.btn.cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#e2382f,#c0221c);color:#ffffff;padding:15px 26px;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:.01em;border:none;box-shadow:0 10px 28px rgba(192,34,28,0.32);transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.btn.cta .cta-arrow{display:inline-block;transition:transform .2s ease}
+.btn.cta:hover{background:linear-gradient(135deg,#eb443a,#c0221c);transform:translateY(-2px);box-shadow:0 16px 36px rgba(192,34,28,0.38)}
+.btn.cta:hover .cta-arrow{transform:translateX(4px)}
+
+.btn.hero-outline{display:inline-flex;align-items:center;background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,0.55);color:#fff;padding:15px 26px;border-radius:999px;font-weight:600;font-size:15px;transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease,color .2s ease,border-color .2s ease}
+.btn.hero-outline:hover{background:#fff;color:#08295a;border-color:#fff;transform:translateY(-2px);box-shadow:0 14px 30px rgba(2,18,38,0.25)}
 
 @media (max-width:1100px){
 	.site-hero{padding:40px 0}
@@ -223,13 +227,14 @@
 /* Center hero content horizontally for full-bleed hero */
 .site-hero .hero-features{align-items:flex-start;width:100%;display:flex;flex-direction:column;gap:14px;padding:0;margin:10px 0 12px}
 .site-hero .hero-features li{max-width:720px;width:100%;margin:0 auto;text-align:left;padding-left:36px}
-.site-hero .hero-ctas{display:flex;justify-content:flex-start;gap:12px;margin-top:14px}
+.site-hero .hero-ctas{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:12px;margin-top:14px}
 .site-hero .hero-title,.site-hero .hero-sub{text-align:left}
 
 @media (max-width:720px){
 	.site-hero{padding:28px 0}
 	.site-hero .hero-title{font-size:22px}
 	.site-hero .hero-sub{font-size:14px}
+	.btn.cta,.btn.hero-outline{padding:12px 20px;font-size:14px}
 }
 
 /* Ensure hero stacks nicely on tablets and phones */

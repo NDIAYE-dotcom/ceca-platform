@@ -168,8 +168,8 @@ export default function Accueil(){
           <p className="hero-sub">L’excellence au service de la gouvernance, du leadership et de la performance en Afrique</p>
 
           <div className="hero-ctas">
-            <Link to="/catalogue" className="btn cta">Découvrir les formations</Link>
-            <Link to="/contact" className="btn secondary" style={{marginLeft:12}}>Nous contacter</Link>
+            <Link to="/catalogue" className="btn cta"><span>Découvrir les formations</span><span className="cta-arrow" aria-hidden="true">→</span></Link>
+            <Link to="/contact" className="btn hero-outline">Nous contacter</Link>
           </div>
         </div>
       </div>
