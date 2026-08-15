@@ -8,6 +8,8 @@
 .apprenant-meta{font-size:13px;color:var(--muted);margin-top:4px}
 .apprenant-access-msg{font-size:12.5px;color:#166534;margin-top:6px}
 .apprenant-access-msg--error{color:#b91c1c}
+.apprenant-access-link{display:flex;gap:8px;margin-top:6px;max-width:480px}
+.apprenant-access-link input{flex:1;min-width:0;padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;color:#475569;background:#f8fafc}
 .apprenant-actions{display:flex;gap:8px;flex:none}
 
 @media (max-width:640px){

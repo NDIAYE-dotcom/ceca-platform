@@ -21,6 +21,7 @@ export default function ApprenantsAdmin(){
   const [query, setQuery] = useState('')
   const [accessState, setAccessState] = useState({}) // id -> 'sending' | 'done' | 'error'
   const [accessMsg, setAccessMsg] = useState({}) // id -> message shown after the attempt
+  const [accessLink, setAccessLink] = useState({}) // id -> access link, shown when the email couldn't be sent
 
   async function load(){
     setLoading(true)
@@ -97,6 +98,7 @@ export default function ApprenantsAdmin(){
   async function handleCreateAccess(it){
     setAccessState(s => ({ ...s, [it.id]: 'sending' }))
     setAccessMsg(s => ({ ...s, [it.id]: null }))
+    setAccessLink(s => ({ ...s, [it.id]: null }))
     try{
       const resp = await fetch('/api/create-learner-access', {
         method: 'POST',
@@ -110,10 +112,26 @@ export default function ApprenantsAdmin(){
         return
       }
       setAccessState(s => ({ ...s, [it.id]: 'done' }))
-      setAccessMsg(s => ({ ...s, [it.id]: data?.delivered ? 'Email envoyé avec le lien d’accès.' : (data?.link ? 'Email non envoyé — copiez le lien à lui transmettre.' : 'Accès créé.') }))
+      if(data?.delivered){
+        setAccessMsg(s => ({ ...s, [it.id]: 'Email envoyé avec le lien d’accès.' }))
+      } else if(data?.link){
+        setAccessMsg(s => ({ ...s, [it.id]: 'Email non envoyé — copiez le lien ci-dessous pour le lui transmettre.' }))
+        setAccessLink(s => ({ ...s, [it.id]: data.link }))
+      } else {
+        setAccessMsg(s => ({ ...s, [it.id]: 'Accès créé.' }))
+      }
     }catch(e){
       setAccessState(s => ({ ...s, [it.id]: 'error' }))
       setAccessMsg(s => ({ ...s, [it.id]: String(e?.message || e) }))
+    }
+  }
+
+  async function copyAccessLink(id, link){
+    try{
+      await navigator.clipboard.writeText(link)
+      setAccessMsg(s => ({ ...s, [id]: 'Lien copié dans le presse-papiers.' }))
+    }catch(e){
+      setAccessMsg(s => ({ ...s, [id]: "Impossible de copier automatiquement — sélectionnez le lien manuellement." }))
     }
   }
 
@@ -196,6 +214,12 @@ export default function ApprenantsAdmin(){
               {accessMsg[it.id] && (
                 <div className={accessState[it.id] === 'error' ? 'apprenant-access-msg apprenant-access-msg--error' : 'apprenant-access-msg'}>
                   {accessMsg[it.id]}
+                </div>
+              )}
+              {accessLink[it.id] && (
+                <div className="apprenant-access-link">
+                  <input type="text" readOnly value={accessLink[it.id]} onFocus={e=>e.target.select()} />
+                  <button type="button" className="admin-btn admin-btn-view" onClick={()=>copyAccessLink(it.id, accessLink[it.id])}>Copier</button>
                 </div>
               )}
             </div>
