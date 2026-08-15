@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Ensure built assets use relative paths so GitHub Pages (served from /repo/) finds them
+// Absolute base: the site is served from the domain root on Vercel (www.ceca-org.com).
+// A relative base ('./') breaks any direct/deep link — e.g. www.ceca-org.com/formation/xxx —
+// because the SPA catch-all rewrite serves the same index.html for that path, and the
+// browser then resolves "./assets/x.js" against /formation/ instead of /, 404ing the
+// asset and rendering a blank page.
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react()],
   server: {
     proxy: {
