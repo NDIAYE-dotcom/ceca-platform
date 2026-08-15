@@ -27,10 +27,18 @@ export default function EspaceElearning(){
       // hub doesn't list cards that would just say "accès non autorisé".
       if(user?.role === 'learner' && user?.email && isSupabaseEnabled){
         try{
-          const { data: regs } = await supabase.from(REGISTRATIONS_TABLE).select('formation_id').ilike('email', user.email)
-          const enrolledIds = new Set((regs || []).map(r => String(r.formation_id)))
-          visible = visible.filter(c => enrolledIds.has(String(c.id)))
-        }catch(e){ /* lookup failed — leave the unfiltered list rather than block the page */ }
+          const { data: regs, error: regsError } = await supabase.from(REGISTRATIONS_TABLE).select('formation_id').ilike('email', user.email)
+          // Supabase returns { data: null, error } on RLS/query failure rather
+          // than throwing — filtering with an empty Set here would silently
+          // hide every course, so only apply the filter when the lookup
+          // actually succeeded.
+          if(!regsError && Array.isArray(regs)){
+            const enrolledIds = new Set(regs.map(r => String(r.formation_id)))
+            visible = visible.filter(c => enrolledIds.has(String(c.id)))
+          } else if(regsError){
+            console.warn('registrations lookup failed, showing unfiltered e-learning list', regsError)
+          }
+        }catch(e){ console.warn('registrations lookup threw, showing unfiltered e-learning list', e) }
       }
 
       if(mounted){ setCourses(visible); setLoading(false) }
