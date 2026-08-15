@@ -17,7 +17,7 @@
 @keyframes dbFadeUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 .db-photo{flex:0 0 300px;position:relative;min-height:280px}
-.db-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.db-photo img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
 .db-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(8,41,90,0.06));pointer-events:none}
 
 .db-content{flex:1;position:relative;padding:40px 40px 40px 0;display:flex;flex-direction:column;justify-content:center;min-width:0}
@@ -35,11 +35,27 @@
 .db-cta:hover{background:#092f70;transform:translateY(-2px)}
 
 @media (max-width:800px){
-  .director-banner{padding:28px 0}
-  .director-banner__inner{flex-direction:column;border-radius:20px}
-  .db-photo{flex:none;min-height:200px}
-  .db-content{padding:24px}
-  .db-footer{flex-direction:column;align-items:flex-start;gap:14px}
+  .director-banner{padding:16px 0}
+  .director-banner__inner{border-radius:16px;gap:12px}
+  .db-photo{flex:0 0 110px;min-height:auto}
+  .db-content{padding:12px 14px 12px 0}
+  .db-quote-mark{font-size:44px;top:2px}
+  .db-eyebrow{font-size:10px;margin-bottom:4px}
+  .db-message{font-size:0.82rem;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .db-footer{flex-direction:row;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:8px}
+  .db-signature{font-size:10px}
+  .db-signature strong{font-size:11.5px}
+  .db-cta{padding:6px 10px;font-size:11px}
+}
+
+@media (max-width:480px){
+  .db-photo{flex-basis:88px}
+  .db-content{padding:10px 10px 10px 0}
+  .db-quote-mark{font-size:36px}
+  .db-eyebrow{font-size:9px}
+  .db-message{font-size:0.76rem;-webkit-line-clamp:3}
+  .db-signature strong{font-size:11px}
+  .db-cta{padding:6px 8px;font-size:10.5px}
 }
 
 @media (prefers-reduced-motion: reduce){

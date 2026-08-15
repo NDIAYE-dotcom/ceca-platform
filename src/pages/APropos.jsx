@@ -101,11 +101,8 @@ export default function APropos(){
       <div className="container director-section" id="mot-directeur">
         <article className="director-message">
           <div className="director-header">
-            <img className="director-photo" src="/img%20sm-01.png" alt="Elhadji Serigne MBAYE" />
-            <div>
-              <span className="section-eyebrow">Le mot du</span>
-              <h2>Directeur Général</h2>
-            </div>
+            <span className="section-eyebrow">Le mot du</span>
+            <h2>Directeur Général</h2>
           </div>
           <div className="director-content">
             <p>Chers partenaires, Mesdames, Messieurs,</p>
