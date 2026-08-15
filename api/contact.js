@@ -32,19 +32,19 @@ function buildSmtpTransport() {
   })
 }
 
-function parseBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = ''
-    req.on('data', chunk => { data += chunk })
-    req.on('end', () => {
-      try {
-        resolve(data ? JSON.parse(data) : {})
-      } catch (e) {
-        reject(e)
-      }
-    })
-    req.on('error', err => reject(err))
-  })
+// Vercel's Node.js runtime already parses the request body for us based on
+// Content-Type and exposes it as `req.body` — the request stream is consumed
+// by the platform before our handler runs, so reading it again manually here
+// (as a previous version of this file did) never receives any data and hangs
+// until the function times out, which surfaces to the client as a bare
+// "500 Internal Server Error" with no JSON body to explain why.
+function getPayload(req) {
+  const body = req.body
+  if (body && typeof body === 'object') return body
+  if (typeof body === 'string' && body.length) {
+    try { return JSON.parse(body) } catch (e) { return null }
+  }
+  return {}
 }
 
 function safeText(value) {
@@ -56,10 +56,8 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  let payload
-  try {
-    payload = await parseBody(req)
-  } catch (e) {
+  const payload = getPayload(req)
+  if (payload === null) {
     return res.status(400).json({ error: 'Invalid JSON' })
   }
 

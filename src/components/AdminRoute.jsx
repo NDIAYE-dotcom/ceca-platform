@@ -9,14 +9,12 @@ export default function AdminRoute({ children }){
 
   if(loading) return <div style={{padding:24}}><Loading text="Vérification de la session" /></div>
   if(!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />
-  // Restrict strictly to the single admin identity
-  const ALLOWED_ADMIN = 'ceca-admin@gmail.com'
-  const email = (user?.email || '').toLowerCase()
-  if(email !== ALLOWED_ADMIN){
+  // Restrict to accounts whose Supabase profile has role = 'admin'
+  if(user?.role !== 'admin'){
     return (
       <div style={{padding:24}}>
         <h3>Accès réservé aux administrateurs</h3>
-        <p>Seul le compte administrateur <strong>{ALLOWED_ADMIN}</strong> peut accéder à cette section.</p>
+        <p>Seuls les comptes avec le rôle administrateur peuvent accéder à cette section.</p>
       </div>
     )
   }

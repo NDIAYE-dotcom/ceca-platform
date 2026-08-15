@@ -63,15 +63,32 @@ aside{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
 	.gallery-item img{transition:none}
 }
 
+/* Per-formation accent theming, matching CourseCard's palette */
+.formation-page.accent-blue{--card-accent:#0b3d91}
+.formation-page.accent-gold{--card-accent:#ad7c12}
+.formation-page.accent-indigo{--card-accent:#4f46e5}
+.formation-page.accent-emerald{--card-accent:#059669}
+.formation-page.accent-cyan{--card-accent:#0891b2}
+.formation-page.accent-amber{--card-accent:#d97706}
+.formation-page.accent-teal{--card-accent:#0f766e}
+.formation-page.accent-green{--card-accent:#16a34a}
+.formation-page.accent-slate{--card-accent:#475569}
+.formation-page.accent-violet{--card-accent:#7c3aed}
+.formation-page.accent-sky{--card-accent:#0284c7}
+.formation-page.accent-rose{--card-accent:#e11d48}
+.formation-page.accent-orange{--card-accent:#ea580c}
+.formation-page.accent-red{--card-accent:#dc2626}
+
 /* Registration card & modern form */
-.registration-card{background:linear-gradient(180deg,var(--blue),#041e3a);padding:20px;border-radius:12px;box-shadow:0 18px 50px rgba(6,20,48,0.12);display:flex;flex-direction:column;gap:14px;color:#fff}
+.registration-card{background:linear-gradient(160deg,var(--blue),#041e3a);padding:26px;border-radius:20px;box-shadow:0 24px 60px rgba(6,20,48,0.16);display:flex;flex-direction:column;gap:16px;color:#fff}
 .registration-card .summary{padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06)}
 .registration-card .summary h4{margin:0 0 6px;color:#fff}
 .registration-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
 .registration-form .form-title{margin:0 0 6px;font-size:18px;color:#fff}
 .registration-form .field{display:flex;flex-direction:column;gap:6px}
 .registration-form .field span{font-size:13px;color:rgba(255,255,255,0.9)}
-.registration-form input,.registration-form select,.registration-form textarea{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);font-size:14px;color:#fff}
+.registration-form input,.registration-form select,.registration-form textarea{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);font-size:14px;color:#fff;transition:border-color .2s ease,background-color .2s ease}
+.registration-form input:focus,.registration-form select:focus,.registration-form textarea:focus{outline:none;border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1)}
 .registration-form input::placeholder,.registration-form textarea::placeholder{color:rgba(255,255,255,0.6)}
 .registration-form textarea{min-height:78px;resize:vertical}
 .registration-form .checkbox{display:flex;gap:10px;align-items:center;font-size:14px;color:#fff}
@@ -96,6 +113,7 @@ aside{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
 .hero-inner{display:flex;align-items:center;justify-content:space-between;gap:18px}
 .hero-title{color:#fff !important;font-size:34px;margin:0 0 6px;text-shadow:0 6px 28px rgba(6,20,48,0.35)}
 .hero-sub{color:#fff !important;margin:0}
+.hero-dates{color:#fff !important;margin:8px 0 0;font-weight:600;font-size:15px}
 .price-chip{background:rgba(255,255,255,0.95);color:var(--blue);padding:8px 12px;border-radius:12px;font-weight:700;box-shadow:0 8px 30px rgba(6,20,48,0.08)}
 
 /* Hero slideshow */
@@ -119,14 +137,22 @@ aside{background:#fff;padding:12px;border-radius:8px;border:1px solid #e6e9ee}
 }
 
 .formation-content{display:grid;grid-template-columns:1fr 360px;gap:26px;padding:34px 0}
-.content-main{display:flex;flex-direction:column;gap:18px}
-.card{background:#fff;padding:20px;border-radius:12px;border:1px solid #eef3fb;box-shadow:0 20px 50px rgba(6,20,48,0.04)}
-.card h3{margin:0 0 10px;color:var(--blue)}
+.content-main{display:flex;flex-direction:column;gap:20px}
+.card{position:relative;background:#fff;padding:24px;border-radius:20px;border:1px solid #eef3fb;box-shadow:0 1px 3px rgba(6,20,48,0.04);overflow:hidden}
+.card::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--card-accent,#0b3d91),color-mix(in srgb, var(--card-accent,#0b3d91) 25%, white))}
+.card h3{margin:0 0 12px;color:#0b1f42;font-size:18px;display:flex;align-items:center;gap:10px}
+.card-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb, var(--card-accent,#0b3d91) 12%, white);font-size:16px}
+.card p{color:#334155;line-height:1.6}
+
 .modules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.module-card{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(180deg,#fbfdff,#fff);padding:12px;border-radius:10px;border:1px solid #eef6ff}
-.module-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,#eef8ff,#ffffff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);box-shadow:0 6px 16px rgba(6,20,48,0.06)}
-.module-body strong{display:block}
+.module-card{display:flex;gap:12px;align-items:flex-start;background:#f8fafc;padding:14px;border-radius:14px;border:1px solid #eef2f7;transition:transform .2s ease,box-shadow .2s ease}
+.module-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(6,20,48,0.06)}
+.module-icon{flex:none;width:32px;height:32px;border-radius:9px;background:var(--card-accent,#0b3d91);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:13px}
+.module-body strong{display:block;color:#1e293b;font-size:14px;line-height:1.4}
 .price-large{font-size:18px;font-weight:700;color:var(--blue)}
+
+.payments{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.payment-badge{display:inline-flex;align-items:center;padding:8px 16px;border-radius:999px;background:#f1f5f9;color:#475569;font-weight:700;font-size:13px;border:1px solid #e2e8f0}
 
 .sticky-aside{position:sticky;top:92px;align-self:start}
 

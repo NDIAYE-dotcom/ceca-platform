@@ -8,6 +8,7 @@ import Accueil from './pages/Accueil'
 import Catalogue from './pages/Catalogue'
 import Formation from './pages/Formation'
 const Elearning = React.lazy(() => import('./pages/Elearning'))
+import EspaceElearning from './pages/EspaceElearning'
 import APropos from './pages/APropos'
 import References from './pages/References'
 import Contact from './pages/Contact'
@@ -18,16 +19,18 @@ import { AuthProvider } from './context/AuthContext'
 
 export default function App(){
   const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
   return (
     <AuthProvider>
-    <div className="app-root">
-      <Header />
+    <div className={`app-root${isAdminRoute ? ' admin-mode' : ''}`}>
+      {!isAdminRoute && <Header />}
       <main>
         <div key={location.pathname} className="page-transition">
           <Routes>
           <Route path="/" element={<Accueil />} />
           <Route path="/catalogue" element={<Catalogue />} />
           <Route path="/formation/:id" element={<Formation />} />
+          <Route path="/elearning" element={<EspaceElearning />} />
           <Route path="/elearning/:id" element={<ProtectedRoute><Suspense fallback={<div>Chargement…</div>}><Elearning /></Suspense></ProtectedRoute>} />
           <Route path="/a-propos" element={<APropos />} />
           <Route path="/references" element={<References />} />
@@ -35,15 +38,18 @@ export default function App(){
           <Route path="/admin" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/admin/formations" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/admin/apprenants" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/messages" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/admin/certificats" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/admin/instructeurs" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/entreprise" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
+          <Route path="/admin/entreprise/:feature" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/admin/parametres" element={<AdminRoute><Suspense fallback={<div>Chargement…</div>}><Admin /></Suspense></AdminRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           </Routes>
         </div>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
     </AuthProvider>
   )

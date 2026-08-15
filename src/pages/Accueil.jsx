@@ -190,7 +190,7 @@ export default function Accueil(){
 
       <div className="container sample-courses">
         <h2>Offres de formation</h2>
-        <div className="courses-grid">
+        <div className="home-courses-grid">
           {featured.map(c=> (
             <CourseCard key={c.id} course={c} />
           ))}

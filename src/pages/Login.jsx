@@ -18,8 +18,7 @@ export default function Login(){
     if(res.error) return setError(res.error.message || 'Erreur')
     // redirect admin to /admin, otherwise back to original destination
     const returnedUser = res.user
-    const ADMIN_EMAIL = 'ceca-admin@gmail.com'
-    if(returnedUser && String(returnedUser.email).toLowerCase() === ADMIN_EMAIL) {
+    if(returnedUser?.role === 'admin') {
       nav('/admin')
       return
     }
@@ -36,6 +35,7 @@ export default function Login(){
         <button className="btn" type="submit">Se connecter</button>
         {error && <div className="error">{error}</div>}
       </form>
+      <p>Pas encore de compte ? <Link to="/register">S'inscrire</Link></p>
     </section>
   )
 }

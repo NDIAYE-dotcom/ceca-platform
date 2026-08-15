@@ -60,6 +60,12 @@ export function AuthProvider({ children }){
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if(!mounted) return
+      // The initial session state is already handled by init() above (which awaits
+      // getSession() before flipping `loading`). Reacting to INITIAL_SESSION here too
+      // races with init(): if it fires first with a not-yet-rehydrated session, it
+      // sets user to null and loading to false, bouncing an authenticated admin to
+      // /login before init() has a chance to restore the real session.
+      if(event === 'INITIAL_SESSION') return
       if(session?.user){
         ;(async ()=>{
           await enrichAndSet(session.user)
@@ -111,16 +117,6 @@ export function AuthProvider({ children }){
   }
 
   async function signIn({ email, password }){
-    // Dev override: allow a local admin login regardless of Supabase state
-    const ADMIN_EMAIL = 'ceca-admin@gmail.com'
-    const ADMIN_PASSWORD = 'adminpass'
-    if(String(email).toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD){
-      const localUser = { id: 'local-admin', email: ADMIN_EMAIL, role: 'admin', full_name: 'CECA Admin' }
-      setUser(localUser)
-      try{ localStorage.setItem('ceca_local_user', JSON.stringify(localUser)) }catch(e){}
-      return { user: localUser }
-    }
-
     try{
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       // Debug logs for failed sign-in (remove in production)
@@ -140,6 +136,7 @@ export function AuthProvider({ children }){
         const enriched = { ...data.user, role: role || undefined, full_name: full_name || undefined }
         setUser(enriched)
         try{ localStorage.setItem('ceca_local_user', JSON.stringify(enriched)) }catch(e){}
+        return { user: enriched }
       }catch(e){
         setUser(data.user)
       }

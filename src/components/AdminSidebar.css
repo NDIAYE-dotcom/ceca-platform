@@ -15,20 +15,22 @@
   box-shadow: 0 8px 24px rgba(2,6,23,0.08);
   z-index:80;
 }
-.sidebar-brand{display:flex;flex-direction:column;gap:4px}
-.sidebar-brand strong{color:#fff;font-size:18px}
-.sidebar-brand small{font-size:12px;color:#dfe8f8}
-.sidebar-nav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.sidebar-nav a{display:block;padding:10px 12px;border-radius:8px;color:#fff;text-decoration:none}
-.sidebar-nav a:hover{background:rgba(255,255,255,0.06);color:#fff}
-.sidebar-footer{margin-top:auto}
-.sidebar-footer .btn.small{padding:8px 10px;font-size:13px;background:#fff;color:#08295a}
+.sidebar-brand{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-brand strong{display:block;color:#fff;font-size:18px;letter-spacing:.02em}
+.sidebar-brand small{display:block;margin-top:2px;font-size:12px;color:#9fb3d9}
 
-/* Ensure links and small buttons are readable on the blue background */
-.sidebar-nav .muted{color:rgba(255,255,255,0.85)}
+/* Mobile-only close button: hidden by default, only shown inside the max-width media query below */
+.sidebar-close{display:none;background:transparent;border:none;color:rgba(255,255,255,0.9);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px}
 
-/* Keep sidebar strictly lateral (side-by-side) on all viewports per request */
-/* On small viewports the sidebar becomes hidden by default and can slide in as an overlay */
+.sidebar-nav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+.sidebar-nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:#c9d6ec;text-decoration:none;font-size:14px;font-weight:500;transition:background-color .15s ease,color .15s ease}
+.sidebar-nav a:hover{background:rgba(255,255,255,0.08);color:#fff}
+.sidebar-nav a.active{background:#0b3d91;color:#fff;box-shadow:0 4px 12px rgba(11,61,145,0.35)}
+.sidebar-nav-icon{font-size:16px;width:20px;text-align:center;flex:none}
+
+.sidebar-footer{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1)}
+.sidebar-user{font-size:12px;color:#9fb3d9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sidebar-footer .btn.small{padding:8px 10px;font-size:13px;background:#fff;color:#08295a;border-radius:6px;text-align:center}
 
 /* Toggle button (hidden on wide screens) */
 .sidebar-toggle{display:none}
@@ -40,11 +42,10 @@
   .admin-sidebar{transform:translateX(-110%);transition:transform .25s ease-in-out}
   .admin-sidebar.open{transform:translateX(0)}
 
-  /* Close button inside sidebar header */
-  .sidebar-close{display:block;margin-left:auto;background:transparent;border:none;color:rgba(255,255,255,0.9);font-size:18px}
+  /* Close button inside sidebar header, mobile only */
+  .sidebar-close{display:block}
 
   /* Overlay behind sidebar when open */
   .sidebar-overlay{display:none}
   .sidebar-overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:70}
 }
-

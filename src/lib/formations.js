@@ -12,7 +12,7 @@ function saveLocal(items){
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) }catch(e){}
 }
 
-export async function getFormations(){
+async function fetchAllFormations(){
   if(USE_SUPABASE && supabase){
     try{
       const { data, error } = await supabase.from('formations').select('*').order('created_at', { ascending: false })
@@ -25,6 +25,12 @@ export async function getFormations(){
   const saved = loadSaved()
   if(saved && Array.isArray(saved) && saved.length) return saved
   return coursesSeed
+}
+
+// Public listings only show formations the admin has marked available.
+export async function getFormations(){
+  const all = await fetchAllFormations()
+  return all.filter(f => f.available !== false)
 }
 
 export async function getFormationById(id){

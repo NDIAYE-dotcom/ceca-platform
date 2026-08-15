@@ -1,39 +1,48 @@
-.director-banner{width:100%;background:linear-gradient(180deg,#ffffff,#f6fbff);border-bottom:1px solid rgba(11,61,145,0.06)}
-.director-banner__inner{max-width:var(--max-width);margin:0 auto;padding:12px 16px}
-.banner-content{display:flex;align-items:center}
-.banner-text h3{margin:0 0 6px 0;color:var(--blue);font-size:1.05rem}
-.banner-text p{margin:0;color:#222;font-size:0.98rem;line-height:1.5}
-
-/* Slide-in entrance for a modern appearance */
-.director-banner{animation:slideUpFade .6s cubic-bezier(.22,.9,.28,1) both}
-@keyframes slideUpFade{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-/* Read-more blinking button */
-/* Smaller, less prominent read-more button */
-.read-more-btn{display:inline-block;margin-left:8px;padding:4px 8px;background:var(--blue);color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.88rem;box-shadow:0 6px 12px rgba(11,61,145,0.10)}
-.read-more-btn:hover{transform:translateY(-1px)}
-@keyframes blink{0%,60%{opacity:1}70%{opacity:0.35}100%{opacity:1}}
-.read-more-btn{animation:blink 2s linear infinite}
-.read-more-btn{display:inline-block;margin-left:8px;padding:2px 6px;background:var(--blue);color:#fff;border-radius:4px;text-decoration:none;font-weight:600;font-size:0.78rem;box-shadow:0 4px 8px rgba(11,61,145,0.08)}
-.read-more-btn:hover{transform:translateY(-0.5px)}
-
-@media (prefers-reduced-motion: reduce){
-  .read-more-btn{animation:none}
+.director-banner{width:100%;background:linear-gradient(180deg,#f8fafc,#eef4fb);padding:48px 0}
+.director-banner__inner{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:0 16px;
+  display:flex;
+  align-items:stretch;
+  gap:40px;
+  background:#fff;
+  border-radius:24px;
+  box-shadow:0 24px 60px rgba(6,20,48,0.08);
+  border:1px solid rgba(11,61,145,0.06);
+  overflow:hidden;
 }
 
-@media (max-width:600px){
-  .banner-text p{font-size:0.92rem}
-}
-/* Slide-in entrance for a modern appearance */
-.director-banner{animation:slideUpFade .6s cubic-bezier(.22,.9,.28,1) both}
-@keyframes slideUpFade{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.director-banner__inner{animation:dbFadeUp .6s cubic-bezier(.22,.9,.28,1) both}
+@keyframes dbFadeUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-/* Read-more blinking button */
-.read-more-btn{display:inline-block;margin-left:8px;padding:6px 10px;background:var(--blue);color:#fff;border-radius:8px;text-decoration:none;font-weight:600;box-shadow:0 6px 18px rgba(11,61,145,0.12)}
-.read-more-btn:hover{transform:translateY(-2px)}
-@keyframes blink{0%,60%{opacity:1}70%{opacity:0.35}100%{opacity:1}}
-.read-more-btn{animation:blink 2s linear infinite}
+.db-photo{flex:0 0 300px;position:relative;min-height:280px}
+.db-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.db-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(8,41,90,0.06));pointer-events:none}
+
+.db-content{flex:1;position:relative;padding:40px 40px 40px 0;display:flex;flex-direction:column;justify-content:center;min-width:0}
+
+.db-quote-mark{position:absolute;top:14px;left:0;font-size:96px;line-height:1;font-family:Georgia,serif;color:#0b3d91;opacity:.08}
+
+.db-eyebrow{position:relative;margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#0b3d91}
+.db-message{position:relative;margin:0;color:#1e293b;font-size:1.05rem;line-height:1.6}
+
+.db-footer{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid #eef2f7}
+.db-signature{display:flex;flex-direction:column;font-size:13px;color:#64748b}
+.db-signature strong{color:#08295a;font-size:14px}
+
+.db-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#0b3d91;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:transform .2s ease,background-color .2s ease}
+.db-cta:hover{background:#092f70;transform:translateY(-2px)}
+
+@media (max-width:800px){
+  .director-banner{padding:28px 0}
+  .director-banner__inner{flex-direction:column;border-radius:20px}
+  .db-photo{flex:none;min-height:200px}
+  .db-content{padding:24px}
+  .db-footer{flex-direction:column;align-items:flex-start;gap:14px}
+}
 
 @media (prefers-reduced-motion: reduce){
-  .read-more-btn{animation:none}
+  .director-banner__inner{animation:none}
+  .db-cta{transition:none}
 }

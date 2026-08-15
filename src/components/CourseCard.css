@@ -1,38 +1,116 @@
-.formation-card{display:flex;flex-direction:column;gap:12px;padding:10px;border-radius:18px;background:transparent;transform:translateY(14px) scale(.99);opacity:0;transition:transform .36s cubic-bezier(.22,.9,.28,1),opacity .36s ease,box-shadow .28s ease}
-.formation-card.in-view{transform:translateY(0) scale(1);opacity:1}
+.formation-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border:1px solid #e7ecf3;
+  border-radius:20px;
+  padding:24px;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(6,20,48,0.04);
+  transform:translateY(16px);
+  opacity:0;
+  transition:transform .5s cubic-bezier(.22,.9,.28,1),opacity .5s ease,box-shadow .25s ease,border-color .25s ease;
+}
+.formation-card.in-view{transform:translateY(0);opacity:1}
 
-.formation-card .card-surface{background:#f0f3f6;padding:18px;border-radius:16px}
-/* Updated icon frame: cleaner, smaller, more professional */
-.formation-card .icon-wrap{position:relative;border-radius:14px;overflow:visible;padding:6px 0 12px 0;margin-bottom:14px}
-/* remove any background behind the icon container so the SVG stands alone */
-.formation-card .icon-wrap::before{display:none}
-.formation-card .icon-frame{position:relative;z-index:1;min-height:155px;border-radius:14px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--card-accent,#0b3d91);box-shadow:none}
-.formation-card .icon-frame svg{width:140px;height:140px;display:block}
-
-/* 3D icon styling + subtle animations */
-.formation-card .icon-frame .formation-icon{width:140px;height:140px;display:block;transform-style:preserve-3d;transition:transform .36s cubic-bezier(.22,.9,.28,1);animation:float 6s ease-in-out infinite}
-.formation-card .icon-frame .formation-icon svg{width:100%;height:100%}
-.formation-card:hover .icon-frame .formation-icon{transform:translateY(-8px) rotateX(6deg) rotateY(-6deg) scale(1.03);animation-duration:5s}
-
-@keyframes float{
-  0%{transform:translateY(0) rotateX(0) rotateY(0)}
-  50%{transform:translateY(-6px) rotateX(2deg) rotateY(1deg)}
-  100%{transform:translateY(0) rotateX(0) rotateY(0)}
+.formation-card::before{
+  content:'';
+  position:absolute;
+  inset:0 0 auto 0;
+  height:4px;
+  background:linear-gradient(90deg,var(--card-accent,#0b3d91),color-mix(in srgb, var(--card-accent,#0b3d91) 30%, white));
 }
 
-@media (prefers-reduced-motion: reduce){
-  .formation-card .icon-frame .formation-icon{animation:none;transition:none}
+.formation-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 24px 48px rgba(6,20,48,0.12);
+  border-color:color-mix(in srgb, var(--card-accent,#0b3d91) 35%, #e7ecf3);
 }
 
-.formation-card .course-body{padding:8px 8px 6px 8px}
-.formation-card .course-card__eyebrow{margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--card-accent,#0b3d91)}
-.formation-card h3{margin:0;color:#08295a;font-size:18px;line-height:1.25}
-.formation-card .course-card__target{margin:10px 0 0;color:#334155;line-height:1.55;font-size:14px}
-.formation-card .course-card__footer{display:flex;flex-direction:column;gap:12px;margin-top:14px}
-.formation-card .btn{align-self:flex-start}
+.fc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px}
 
-.formation-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,61,145,0.08)}
-.formation-card:hover .card-surface{box-shadow:0 18px 40px rgba(11,61,145,0.07)}
+.fc-icon{
+  flex:none;
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(150deg,color-mix(in srgb, var(--card-accent,#0b3d91) 16%, white),color-mix(in srgb, var(--card-accent,#0b3d91) 6%, white));
+  transition:transform .3s ease;
+}
+.formation-card:hover .fc-icon{transform:scale(1.06) rotate(-2deg)}
+.fc-icon svg{width:32px;height:32px}
+.fc-icon svg circle{display:none}
+
+.fc-pill{
+  flex:none;
+  max-width:60%;
+  text-align:right;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.02em;
+  line-height:1.3;
+  color:var(--card-accent,#0b3d91);
+  background:color-mix(in srgb, var(--card-accent,#0b3d91) 10%, white);
+  border:1px solid color-mix(in srgb, var(--card-accent,#0b3d91) 20%, white);
+  padding:5px 10px;
+  border-radius:999px;
+}
+
+.formation-card h3{
+  margin:0 0 8px;
+  color:#0b1f42;
+  font-size:19px;
+  font-weight:800;
+  line-height:1.3;
+}
+
+.fc-target{
+  margin:0 0 14px;
+  color:#5b6472;
+  font-size:14px;
+  line-height:1.55;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.fc-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.fc-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:12px;
+  font-weight:600;
+  color:#475569;
+  background:#f1f5f9;
+  padding:6px 10px;
+  border-radius:999px;
+}
+.fc-chip--accent{color:var(--card-accent,#0b3d91);background:color-mix(in srgb, var(--card-accent,#0b3d91) 10%, white)}
+
+.fc-cta{
+  margin-top:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:var(--card-accent,#0b3d91);
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  padding:12px 18px;
+  border-radius:12px;
+  transition:background-color .2s ease,gap .2s ease;
+}
+.fc-cta-arrow{transition:transform .25s cubic-bezier(.22,.9,.28,1)}
+.formation-card:hover .fc-cta{gap:12px}
+.formation-card:hover .fc-cta-arrow{transform:translateX(3px)}
 
 .formation-card.accent-blue{--card-accent:#0b3d91}
 .formation-card.accent-gold{--card-accent:#ad7c12}
@@ -49,15 +127,11 @@
 .formation-card.accent-orange{--card-accent:#ea580c}
 .formation-card.accent-red{--card-accent:#dc2626}
 
-@media (min-width:1200px){
-  .formation-card .icon-frame{min-height:190px}
-}
-
 @media (max-width:700px){
-  .formation-card h3{font-size:17px}
-  .formation-card .icon-frame{min-height:160px}
+  .formation-card{padding:20px}
+  .formation-card h3{font-size:18px}
 }
 
 @media (prefers-reduced-motion: reduce){
-  .formation-card{transition:none}
+  .formation-card,.fc-icon,.fc-cta,.fc-cta-arrow{transition:none;animation:none}
 }

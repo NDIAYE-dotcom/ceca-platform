@@ -1,10 +1,21 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import './AdminSidebar.css'
 import { useAuth } from '../context/AuthContext'
 
+const NAV_ITEMS = [
+  { to: '/admin', label: 'Tableau de bord', icon: '📊', end: true },
+  { to: '/admin/formations', label: 'Formations', icon: '🎓' },
+  { to: '/admin/apprenants', label: 'Apprenants', icon: '👥' },
+  { to: '/admin/messages', label: 'Messages', icon: '✉️' },
+  { to: '/admin/certificats', label: 'Certificats', icon: '📜' },
+  { to: '/admin/instructeurs', label: 'Instructeurs', icon: '🧑‍🏫' },
+  { to: '/admin/entreprise', label: "Gestion de l'entreprise", icon: '🏢' },
+  { to: '/admin/parametres', label: 'Paramètres', icon: '⚙️' }
+]
+
 export default function AdminSidebar(){
-  const { signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const [open, setOpen] = useState(false)
 
   function openSidebar(){ setOpen(true) }
@@ -12,27 +23,32 @@ export default function AdminSidebar(){
 
   return (
     <>
-      <button className="sidebar-toggle" aria-label="Ouvrir le menu" onClick={openSidebar}>☰</button>
+      {!open && <button className="sidebar-toggle" aria-label="Ouvrir le menu" onClick={openSidebar}>☰</button>}
       <div className={"sidebar-overlay " + (open ? 'show' : '')} onClick={closeSidebar} />
-      <aside className={"admin-sidebar " + (open ? 'open' : '')} aria-hidden={!open && window.innerWidth < 900}>
+      <aside className={"admin-sidebar " + (open ? 'open' : '')}>
         <div className="sidebar-brand">
-          <strong>CECA</strong>
-          <small>Admin</small>
+          <div>
+            <strong>CECA</strong>
+            <small>Espace administration</small>
+          </div>
           <button className="sidebar-close" onClick={closeSidebar} aria-label="Fermer">×</button>
         </div>
 
         <nav className="sidebar-nav">
           <ul>
-            <li><Link to="/admin" onClick={closeSidebar}>Tableau de bord</Link></li>
-            <li><Link to="/admin/formations" onClick={closeSidebar}>Formations</Link></li>
-            <li><Link to="/admin/apprenants" onClick={closeSidebar}>Apprenants</Link></li>
-            <li><Link to="/admin/certificats" onClick={closeSidebar}>Certificats</Link></li>
-            <li><Link to="/admin/instructeurs" onClick={closeSidebar}>Instructeurs</Link></li>
-            <li><Link to="/admin/parametres" onClick={closeSidebar}>Paramètres</Link></li>
+            {NAV_ITEMS.map(item => (
+              <li key={item.to}>
+                <NavLink to={item.to} end={item.end} onClick={closeSidebar} className={({isActive}) => isActive ? 'active' : ''}>
+                  <span className="sidebar-nav-icon" aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </nav>
 
         <div className="sidebar-footer">
+          {user?.email && <div className="sidebar-user" title={user.email}>{user.email}</div>}
           <button className="btn small" onClick={async ()=>{ await signOut(); closeSidebar() }}>Déconnexion</button>
         </div>
       </aside>

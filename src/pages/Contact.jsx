@@ -67,48 +67,83 @@ export default function Contact(){
 
   return (
     <section className="container contact-page">
+      <span className="section-eyebrow">Parlons de votre projet</span>
       <h1>Contactez-nous</h1>
+      <p className="contact-lead">Une question, un projet d'accompagnement ou une demande de partenariat ? Notre équipe vous répond rapidement.</p>
 
       <div className="contact-grid">
         <div className="contact-info">
-          <p><strong>CECA-Solutions</strong></p>
-          <p>Keur Massar, Dakar, Sénégal</p>
-          <p>Email: <a href="mailto:ceconsultingafrique@gmail.com">ceconsultingafrique@gmail.com</a></p>
-          <p>Téléphone: 📞 <a href="tel:+221338377143">+221 33 837 7143</a> / <a href="tel:+221775123076">+221 77 512 30 76</a></p>
-          <p style={{fontSize:'14px'}}><strong>NINEA:</strong> 0063366731R1</p>
-          <p style={{fontSize:'14px'}}><strong>RCCM:</strong> SN.DKR.2017.A.10183</p>
-          <p>Suivez-nous : <a href="#">LinkedIn</a> • <a href="#">Twitter</a> • <a href="#">Facebook</a></p>
+          <h3>CECA-Solutions</h3>
+
+          <div className="contact-row">
+            <span className="contact-icon" aria-hidden="true">📍</span>
+            <span>Keur Massar, Dakar, Sénégal</span>
+          </div>
+          <div className="contact-row">
+            <span className="contact-icon" aria-hidden="true">✉️</span>
+            <a href="mailto:ceconsultingafrique@gmail.com">ceconsultingafrique@gmail.com</a>
+          </div>
+          <div className="contact-row">
+            <span className="contact-icon" aria-hidden="true">📞</span>
+            <span><a href="tel:+221338377143">+221 33 837 7143</a> / <a href="tel:+221775123076">+221 77 512 30 76</a></span>
+          </div>
+
+          <div className="contact-legal">
+            <span><strong>NINEA</strong> 0063366731R1</span>
+            <span><strong>RCCM</strong> SN.DKR.2017.A.10183</span>
+          </div>
+
+          <div className="contact-socials">
+            <a href="https://facebook.com/ceca-solutions" target="_blank" rel="noreferrer" aria-label="Facebook">📘</a>
+            <a href="https://instagram.com/ceca-solutions" target="_blank" rel="noreferrer" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com/company/ceca-solutions" target="_blank" rel="noreferrer" aria-label="LinkedIn">💼</a>
+          </div>
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>
           {error && <div className="form-error">{error}</div>}
           {success && <div className="form-success">{success}</div>}
-          <label>Nom complet *</label>
-          <input value={form.name} onChange={e=>update('name', e.target.value)} placeholder="Nom complet" required />
 
-          <label>Email *</label>
-          <input value={form.email} onChange={e=>update('email', e.target.value)} placeholder="Email" type="email" required />
+          <div className="form-row">
+            <label className="field">
+              <span>Nom complet *</span>
+              <input value={form.name} onChange={e=>update('name', e.target.value)} placeholder="Nom complet" required />
+            </label>
+            <label className="field">
+              <span>Email *</span>
+              <input value={form.email} onChange={e=>update('email', e.target.value)} placeholder="Email" type="email" required />
+            </label>
+          </div>
 
-          <label>Organisation</label>
-          <input value={form.organisation} onChange={e=>update('organisation', e.target.value)} placeholder="Organisation / Institution" />
+          <div className="form-row">
+            <label className="field">
+              <span>Organisation</span>
+              <input value={form.organisation} onChange={e=>update('organisation', e.target.value)} placeholder="Organisation / Institution" />
+            </label>
+            <label className="field">
+              <span>Thème</span>
+              <select value={form.topic} onChange={e=>update('topic', e.target.value)}>
+                <option>Information</option>
+                <option>Inscription</option>
+                <option>Partenariat</option>
+                <option>Intervention</option>
+                <option>Autre</option>
+              </select>
+            </label>
+          </div>
 
-          <label>Sujet</label>
-          <input value={form.subject} onChange={e=>update('subject', e.target.value)} placeholder="Sujet" />
+          <label className="field">
+            <span>Sujet</span>
+            <input value={form.subject} onChange={e=>update('subject', e.target.value)} placeholder="Sujet" />
+          </label>
 
-          <label>Thème</label>
-          <select value={form.topic} onChange={e=>update('topic', e.target.value)}>
-            <option>Information</option>
-            <option>Inscription</option>
-            <option>Partenariat</option>
-            <option>Intervention</option>
-            <option>Autre</option>
-          </select>
-
-          <label>Message *</label>
-          <textarea value={form.message} onChange={e=>update('message', e.target.value)} placeholder="Votre message" required />
+          <label className="field">
+            <span>Message *</span>
+            <textarea value={form.message} onChange={e=>update('message', e.target.value)} placeholder="Votre message" required />
+          </label>
 
           <div className="form-actions">
-            <button className="btn" type="submit" disabled={loading}>{loading ? 'Envoi...' : 'Envoyer le message'}</button>
+            <button className="btn" type="submit" disabled={loading}>{loading ? 'Envoi…' : 'Envoyer le message →'}</button>
           </div>
         </form>
       </div>

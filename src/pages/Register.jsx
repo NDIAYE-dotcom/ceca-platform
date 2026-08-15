@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Auth.css'
 
@@ -35,6 +35,7 @@ export default function Register(){
         <button className="btn" type="submit">S'inscrire</button>
         {error && <div className="error">{error}</div>}
       </form>
+      <p>Déjà un compte ? <Link to="/login">Se connecter</Link></p>
     </section>
   )
 }

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { getFormationById } from '../lib/formations'
 import './Formation.css'
 import { usdToFcfa, formatFcfa } from '../utils/currency'
+import { formatDateRange } from '../utils/dates'
 import { useAuth } from '../context/AuthContext'
 import { supabase, isSupabaseEnabled } from '../lib/supabase'
 
@@ -25,7 +26,7 @@ export default function Formation(){
   if(!course) return <div className="container">Formation introuvable</div>
 
   return (
-    <section className="formation-page">
+    <section className={`formation-page accent-${course.accent || 'blue'}`}>
       <div className="hero">
         <div className="hero-slides">
           {
@@ -47,6 +48,9 @@ export default function Formation(){
                 if(course.instructor) parts.push(`Formateur : ${course.instructor}`)
                 return <p className="hero-sub">{parts.filter(Boolean).join(' • ')}</p>
               })()}
+              {formatDateRange(course.start_date, course.end_date) && (
+                <p className="hero-dates">📅 {formatDateRange(course.start_date, course.end_date)}</p>
+              )}
             </div>
           <div className="hero-right">
             {course.price && <div className="price-chip">{`${course.price} USD`}</div>}
@@ -57,12 +61,12 @@ export default function Formation(){
       <div className="container formation-content">
         <main className="content-main">
           <section className="card objectives">
-            <h3>Objectifs</h3>
+            <h3><span className="card-icon" aria-hidden="true">🎯</span> Objectifs</h3>
             <p>{course.objective || "À l'issue de la formation, les participants seront capables de mettre en œuvre des procédures conformes aux meilleures pratiques."}</p>
           </section>
 
           <section className="card modules">
-            <h3>Modules</h3>
+            <h3><span className="card-icon" aria-hidden="true">📚</span> Modules</h3>
             <div className="modules-grid">
               {(course.modules || []).length === 0 && <div className="muted">Modules non spécifiés pour cette formation.</div>}
               {(course.modules || []).map((m, idx) => (
@@ -77,29 +81,22 @@ export default function Formation(){
           </section>
 
           <section className="card details">
-            <h3>Public cible</h3>
+            <h3><span className="card-icon" aria-hidden="true">👥</span> Public cible</h3>
             <p>{course.target || 'Agents publics, responsables financiers, auditeurs internes, consultants.'}</p>
-
-            {course.modules && course.modules.length > 0 && (
-              <>
-                <h3>Résumé des modules</h3>
-                <p>{course.modules.join(' • ')}</p>
-              </>
-            )}
 
             {course.price && (
               <>
-                <h3>Tarif</h3>
+                <h3><span className="card-icon" aria-hidden="true">💳</span> Tarif</h3>
                 <p className="price-large">{`${course.price} USD — ${formatFcfa(usdToFcfa(course.price))} FCFA`}</p>
               </>
             )}
 
-            <h3>Inscription & Paiement</h3>
-            <p>Choisissez votre mode de paiement. (Placeholders pour Wave / Orange Money / Carte)</p>
+            <h3><span className="card-icon" aria-hidden="true">💳</span> Inscription & Paiement</h3>
+            <p className="muted">Modes de paiement acceptés :</p>
             <div className="payments">
-              <button className="btn">Payer par Wave (placeholder)</button>
-              <button className="btn secondary">Orange Money (placeholder)</button>
-              <button className="btn secondary">Carte bancaire (placeholder)</button>
+              <span className="payment-badge">Wave</span>
+              <span className="payment-badge">Orange Money</span>
+              <span className="payment-badge">Carte bancaire</span>
             </div>
 
             <p className="note">Après paiement, vous recevrez un lien d'accès à l'espace e-learning et votre certificat sera généré automatiquement à la réussite.</p>
@@ -116,6 +113,7 @@ export default function Formation(){
             <form className="registration-form" onSubmit={async (e)=>{
               e.preventDefault()
               setError(null)
+              if(course.available === false){ setError('Cette formation est actuellement indisponible. Les inscriptions sont suspendues.'); return }
               if(!formData.name || !formData.email) { setError('Veuillez renseigner votre nom et votre email.'); return }
               if(!formData.agree){ setError('Vous devez accepter les conditions pour vous inscrire.'); return }
               setSubmitting(true)
@@ -135,27 +133,9 @@ export default function Formation(){
               let saved = false
               try{
                 if(isSupabaseEnabled){
-                  const tableNotFound = (err) => {
-                    const m = String(err?.message || err || '').toLowerCase()
-                    return /could not find the table|relation ".+" does not exist|does not exist in the schema cache|404/.test(m)
-                  }
-
                   const res = await supabase.from(REG_TABLE).insert([{ ...registration }])
-                  if(res?.error){
-                    // if table doesn't exist, try the alternate singular/plural name automatically
-                    if(tableNotFound(res.error)){
-                      const alternate = REG_TABLE === 'registrations' ? 'registration' : 'registrations'
-                      try{
-                        const res2 = await supabase.from(alternate).insert([{ ...registration }])
-                        if(!res2?.error){ saved = true }
-                        else console.warn('Supabase alternate insert error', res2.error)
-                      }catch(e2){ console.warn('Supabase alternate insert threw', e2) }
-                    } else {
-                      throw res.error
-                    }
-                  } else {
-                    saved = true
-                  }
+                  if(res?.error) throw res.error
+                  saved = true
                 }
               }catch(e){
                 console.warn('Supabase registration failed, falling back to localStorage', e)
@@ -189,6 +169,7 @@ export default function Formation(){
               }
             }}>
               <h4 className="form-title">S'inscrire à cette formation</h4>
+              {course.available === false && <div className="form-error">Cette formation est actuellement indisponible. Les inscriptions sont suspendues.</div>}
               {error && <div className="form-error">{error}</div>}
               {success && <div className="form-success">{success}</div>}
 
@@ -232,7 +213,7 @@ export default function Formation(){
               </label>
 
               <div className="form-actions">
-                <button className="btn primary" disabled={submitting}>{submitting ? 'Enregistrement…' : 'S’inscrire'}</button>
+                <button className="btn primary" disabled={submitting || course.available === false}>{submitting ? 'Enregistrement…' : 'S’inscrire'}</button>
                 <Link to={`/elearning/${course.id}`} className="btn secondary">Voir la démo</Link>
               </div>
             </form>

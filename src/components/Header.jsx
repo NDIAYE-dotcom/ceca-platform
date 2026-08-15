@@ -37,10 +37,11 @@ export default function Header(){
         </button>
         <nav className={`main-nav ${menuOpen ? 'open' : ''}`}>
           <div className="nav-wrap">
+            <Link to="/" className="nav-link" onClick={closeMenu}>Accueil</Link>
             <Link to="/a-propos" className="nav-link highlight" onClick={closeMenu}>À propos</Link>
             <Link to="/catalogue" className="nav-link highlight" onClick={closeMenu}>Formations</Link>
             <Link to="/contact" className="nav-link" onClick={closeMenu}>Contact</Link>
-            <Link to="/elearning/mp-101" className="nav-link" onClick={closeMenu}>Espace e-learning</Link>
+            <Link to="/elearning" className="nav-link" onClick={closeMenu}>Espace e-learning</Link>
             {user ? (
               <>
                 <span className="nav-user">{user.user_metadata?.name || user.email}</span>

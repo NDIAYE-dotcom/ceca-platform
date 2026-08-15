@@ -1,4 +1,15 @@
-.auth-page{max-width:640px;margin:20px auto}
-.auth-form{display:flex;flex-direction:column;gap:8px}
-.auth-form input{padding:8px;border:1px solid #e6e9ee;border-radius:6px}
-.auth-form .error{color:#a00;margin-top:8px}
+/* Compound selector (.auth-page.container) so this reliably beats the global
+   .container max-width rule regardless of stylesheet load order — both are
+   single-class selectors otherwise, so the cascade winner isn't guaranteed. */
+.auth-page.container{max-width:440px;margin:56px auto;padding:36px 32px;background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(6,20,48,0.08);border:1px solid #eef3fb}
+.auth-page h1{margin:0 0 20px;text-align:center}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth-form input{padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px}
+.auth-form input:focus{outline:2px solid #c7d2fe;border-color:#818cf8}
+.auth-form .btn{margin-top:6px}
+.auth-form .error{color:#b91c1c;margin-top:4px;font-size:13px}
+.auth-page p{text-align:center;margin-top:16px;font-size:14px}
+
+@media (max-width:520px){
+	.auth-page.container{margin:24px auto;padding:24px 20px;border-radius:12px;box-shadow:none;border:none}
+}

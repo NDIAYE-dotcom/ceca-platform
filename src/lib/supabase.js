@@ -77,13 +77,17 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
 			return {
 				select(selectCols) {
 					return {
-						eq: async (field, value) => {
-							if (table === 'profiles' && field === 'id') {
-								const found = Array.from(users.values()).find(u => u.id === value)
-								if (found) return { data: { role: found.role, full_name: found.full_name }, error: null }
-								return { data: null, error: null }
+						eq(field, value) {
+							return {
+								maybeSingle: async () => {
+									if (table === 'profiles' && field === 'id') {
+										const found = Array.from(users.values()).find(u => u.id === value)
+										if (found) return { data: { role: found.role, full_name: found.full_name }, error: null }
+										return { data: null, error: null }
+									}
+									return { data: null, error: null }
+								}
 							}
-							return { data: null, error: null }
 						},
 						maybeSingle: async () => ({ data: null, error: null })
 					}

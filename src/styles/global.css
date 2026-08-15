@@ -19,6 +19,9 @@ main{flex:1;min-height:60vh;padding:18px 0}
 .btn.secondary{background:#e6e9ee;color:var(--blue)}
 h1,h2,h3{color:var(--blue)}
 
+/* Small uppercase label used above section headings across several pages */
+.eyebrow,.section-eyebrow{display:inline-block;margin-bottom:6px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#0b3d91}
+
 /* Animations & motion utilities */
 :root{
   --motion-duration: 420ms;

@@ -1,21 +1,17 @@
 .admin-page{padding:12px}
-.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
-.admin-grid .card{background:#fff;padding:14px;border-radius:8px;border:1px solid #e6e9ee;box-shadow:0 1px 4px rgba(0,0,0,0.04);min-height:80px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--blue)}
 
-/* Layout for admin page: strict lateral sidebar + main content */
-.root, :root{}
-:root{--admin-sidebar-width:220px}
+/* No public site header renders in admin mode (see App.jsx) — the sidebar's fixed
+   positioning normally offsets for the header's height, so zero that out here. */
+.app-root.admin-mode{--site-header-height:0px}
+
+/* Layout: strict lateral sidebar + main content */
+:root{--admin-sidebar-width:260px}
 .admin-layout{display:flex;align-items:flex-start;gap:20px}
-.admin-main{flex:1;min-width:0;margin-left:var(--admin-sidebar-width);padding-left:24px}
-.admin-main .card{min-height:80px}
-
-/* Ensure main content can shrink properly and scroll if needed */
-.admin-main{overflow:visible}
+.admin-main{flex:1;min-width:0;margin-left:var(--admin-sidebar-width);padding-left:24px;overflow:visible}
 
 /* Make admin page use full viewport width instead of centering in the global .container */
 .admin-page.container{max-width:100% !important;width:100% !important;padding-left:0 !important;padding-right:32px}
 
-/* Responsive: on small screens the sidebar becomes overlay and main content uses full width */
 @media (max-width: 900px){
 	.admin-main{margin-left:0;padding-left:16px}
 }
@@ -24,5 +20,87 @@
 	.admin-page.container{padding-left:80px;padding-right:80px}
 }
 
-/* Blue vertical band behind sidebar that extends to the bottom of the viewport */
+.admin-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.admin-header h1{margin:0}
+.admin-header .muted{margin:4px 0 0}
 
+.admin-section-title{margin:28px 0 12px;color:#08295a}
+
+/* Stat cards */
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.stat-card{background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(2,6,23,0.04)}
+.stat-value{font-size:28px;font-weight:800;color:#0b3d91;line-height:1.1}
+.stat-label{margin-top:6px;font-size:13px;color:#64748b;font-weight:600}
+.stat-card--muted .stat-value{color:#94a3b8}
+
+/* Quick actions */
+.admin-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.action-card{appearance:none;text-align:left;cursor:pointer;background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 4px rgba(2,6,23,0.04);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.action-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(2,6,23,0.08);border-color:#c7d2fe}
+.action-card strong{color:#08295a;font-size:15px}
+.action-card .muted{font-size:13px}
+
+/* Generic admin panel (used by Coming-soon sections) */
+.admin-back-link{display:inline-block;margin-bottom:10px;font-size:13px;font-weight:600;color:#0b3d91;text-decoration:none}
+.admin-back-link:hover{text-decoration:underline}
+.admin-panel h2{margin:0 0 4px;color:#08295a}
+.admin-empty-state{margin-top:18px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:36px 20px;text-align:center;color:#334155}
+.admin-empty-icon{font-size:32px;margin-bottom:8px}
+.admin-empty-state p{margin:4px 0}
+
+.admin-feature-preview{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.admin-feature-preview li{background:#fff;border:1px solid #e6e9ee;border-radius:10px;padding:0;font-size:13px;font-weight:600;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.admin-feature-preview li:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,6,23,0.08);border-color:#c7d2fe}
+.admin-feature-preview li a{display:block;padding:12px 14px;color:#334155;text-decoration:none}
+.admin-feature-preview li a::before{content:'○ ';color:#94a3b8}
+.admin-feature-preview li a:hover{color:#0b3d91}
+.admin-feature-preview--live{border-color:#bbf7d0 !important;background:#f0fdf4 !important}
+.admin-feature-preview--live a::before{content:'● ';color:#16a34a}
+.admin-feature-preview-badge{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#15803d;background:#dcfce7;padding:2px 6px;border-radius:999px;vertical-align:middle}
+
+/* Shared small action buttons, used across Formations/Apprenants admin lists */
+.admin-btn{appearance:none;border:1px solid transparent;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background-color .15s ease,border-color .15s ease}
+.admin-btn-view{background:#eef2ff;color:#3730a3;border-color:#e0e7ff}
+.admin-btn-view:hover{background:#e0e7ff}
+.admin-btn-edit{background:#0b3d91;color:#fff}
+.admin-btn-edit:hover{background:#092f70}
+.admin-btn-delete{background:#fef2f2;color:#b91c1c;border-color:#fee2e2}
+.admin-btn-delete:hover{background:#fee2e2}
+.admin-btn:disabled{opacity:.6;cursor:not-allowed}
+
+.admin-error-banner{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:14px}
+
+/* Shared list header (Formations / Apprenants / Missions) */
+.fa-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.fa-header h2{margin:0;color:#08295a}
+.fa-header .muted{margin:4px 0 0}
+
+/* Shared create/edit modal, used by any admin CRUD screen */
+.fa-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,15,35,0.45);z-index:200;padding:20px}
+.fa-modal-inner{background:#fff;padding:22px;border-radius:12px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(2,6,23,0.25)}
+.fa-modal-inner h3{margin:0 0 14px;color:#08295a;position:sticky;top:-22px;background:#fff;padding-top:22px;margin-top:-22px;z-index:1}
+.fa-field{display:flex;flex-direction:column;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:#334155}
+.fa-field input,.fa-field textarea,.fa-field select{font:inherit;font-weight:400;box-sizing:border-box;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;color:#0f172a}
+.fa-field input:focus,.fa-field textarea:focus,.fa-field select:focus{outline:2px solid #c7d2fe;border-color:#818cf8}
+.fa-field-row{display:flex;gap:12px}
+.fa-field-row .fa-field{flex:1}
+.fa-modal-actions{display:flex;gap:8px;margin-top:18px;position:sticky;bottom:-22px;background:#fff;padding-bottom:22px;margin-bottom:-22px}
+
+/* Shared search toolbar, used by Apprenants/Messages admin lists */
+.apprenants-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.apprenants-search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;min-width:220px;color:#0f172a}
+.apprenants-search:focus{outline:2px solid #c7d2fe;border-color:#818cf8}
+
+/* Shared read-more/detail modal, used by Apprenants/Messages admin lists */
+.modal-backdrop{position:fixed;inset:0;background:rgba(12,20,32,0.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:1200;animation:fadeIn 220ms ease-out}
+.modal-card{width:100%;max-width:760px;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);border-radius:12px;box-shadow:0 10px 30px rgba(8,20,40,0.12), 0 2px 6px rgba(8,20,40,0.06);padding:20px 22px;transform:translateY(10px) scale(0.995);animation:popUp 260ms cubic-bezier(.2,.9,.26,1) forwards;border:1px solid rgba(12,36,80,0.06);max-height:80vh;overflow-y:auto}
+.modal-card h3{margin:0 0 8px 0;font-size:18px}
+.modal-card .muted{color:var(--muted)}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popUp{from{opacity:0;transform:translateY(10px) scale(0.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+@media (max-width:520px){
+	.modal-card{padding:16px;max-width:92%}
+	.modal-card h3{font-size:16px}
+}
