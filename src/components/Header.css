@@ -18,17 +18,17 @@
 .btn.small{background:#ffffff;color:#08295a;padding:6px 10px;border-radius:4px;margin-left:12px}
 
 /* Mobile menu toggle */
-.mobile-toggle{display:none;background:transparent;border:0;color:#fff;font-size:22px;line-height:1;padding:6px 8px}
+.mobile-toggle{display:none;background:transparent;border:0;color:#fff;font-size:22px;line-height:1;padding:6px 8px;min-width:44px;min-height:44px;align-items:center;justify-content:center}
 .mobile-toggle span{display:inline-block}
 @media (max-width:900px){
-	.mobile-toggle{display:inline-block}
+	.mobile-toggle{display:inline-flex}
 
 	/* Mobile menu: anchored panel under the header with a modern overlay feel */
 	.main-nav{position:fixed;right:12px;left:12px;top:calc(var(--site-header-height) + 10px);background:linear-gradient(180deg,rgba(8,41,90,0.98),rgba(7,34,71,0.98));border:1px solid rgba(255,255,255,0.08);border-radius:18px;width:auto;height:auto;max-height:calc(100vh - var(--site-header-height) - 22px);padding:16px;display:flex;flex-direction:column;gap:12px;z-index:11140;transform:translateY(-14px) scale(.98);opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.22,.9,.28,1),opacity .22s ease,box-shadow .26s ease;box-shadow:0 24px 60px rgba(2,6,23,0.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:auto}
 	.main-nav.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
 	.main-nav::before{content:'';position:sticky;top:0;display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);margin:0 0 6px}
 
-	.main-nav a{margin-left:0;padding:12px 14px;border-radius:12px;color:#fff}
+	.main-nav a{margin-left:0;padding:12px 14px;border-radius:12px;color:#fff;display:flex;align-items:center;min-height:44px;box-sizing:border-box}
 	.main-nav a.nav-link{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.04)}
 	.main-nav a.highlight:hover{color:#fff;background:rgba(255,255,255,0.12)}
 	.main-nav .btn.small{margin-left:0;border-radius:12px;padding:11px 14px;background:#fff;color:#08295a;box-shadow:0 12px 28px rgba(6,20,48,0.18)}

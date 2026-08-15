@@ -29,9 +29,9 @@ export default function Register(){
     <section className="container auth-page">
       <h1>Inscription</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
-        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Nom complet" required />
-        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" required />
-        <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" required />
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Nom complet" aria-label="Nom complet" autoComplete="name" required />
+        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" aria-label="Email" autoComplete="email" required />
+        <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" aria-label="Mot de passe" autoComplete="new-password" required />
         <button className="btn" type="submit">S'inscrire</button>
         {error && <div className="error">{error}</div>}
       </form>

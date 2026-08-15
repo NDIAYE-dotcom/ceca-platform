@@ -5,6 +5,7 @@ import './FormationsAdmin.css'
 import { Link } from 'react-router-dom'
 import FormationIcon, { getIconKey, ICON_OPTIONS } from '../../components/FormationIcon'
 import { formatDateRange } from '../../utils/dates'
+import useEscapeKey from '../../hooks/useEscapeKey'
 
 const STORAGE_KEY = 'ceca_admin_formations'
 
@@ -23,6 +24,7 @@ function save(items){
 export default function FormationsAdmin(){
   const [items, setItems] = useState([])
   const [open, setOpen] = useState(false)
+  useEscapeKey(()=>setOpen(false), open)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'' })
 
@@ -186,7 +188,7 @@ export default function FormationsAdmin(){
 
       {open && (
         <div className="fa-modal">
-          <div className="fa-modal-inner">
+          <div className="fa-modal-inner" role="dialog" aria-modal="true">
             <h3>{editing ? 'Éditer le cours' : 'Nouveau cours'}</h3>
             <label className="fa-field">
               <span>Titre</span>

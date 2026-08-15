@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { supabase, isSupabaseEnabled } from '../../lib/supabase'
+import useEscapeKey from '../../hooks/useEscapeKey'
 import '../../pages/Admin.css'
 import './ApprenantsAdmin.css'
 
@@ -18,6 +19,7 @@ export default function ApprenantsAdmin(){
   const [errorMsg, setErrorMsg] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
   const [selectedItem, setSelectedItem] = useState(null)
+  useEscapeKey(()=>setSelectedItem(null), Boolean(selectedItem))
   const [query, setQuery] = useState('')
   const [accessState, setAccessState] = useState({}) // id -> 'sending' | 'done' | 'error'
   const [accessMsg, setAccessMsg] = useState({}) // id -> message shown after the attempt
@@ -188,7 +190,7 @@ export default function ApprenantsAdmin(){
 
       {selectedItem && (
         <div className="modal-backdrop" onClick={()=>setSelectedItem(null)}>
-          <div className="modal-card" onClick={(e)=>e.stopPropagation()}>
+          <div className="modal-card" onClick={(e)=>e.stopPropagation()} role="dialog" aria-modal="true">
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
               <h3>Détails de l'inscription</h3>
               <button className="admin-btn admin-btn-view" onClick={()=>setSelectedItem(null)}>Fermer</button>

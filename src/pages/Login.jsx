@@ -32,8 +32,8 @@ export default function Login(){
     <section className="container auth-page">
       <h1>Connexion</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
-        <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" required />
-        <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" required />
+        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" aria-label="Email" autoComplete="email" required />
+        <input value={password} type="password" onChange={e=>setPassword(e.target.value)} placeholder="Mot de passe" aria-label="Mot de passe" autoComplete="current-password" required />
         <button className="btn" type="submit">Se connecter</button>
         {error && <div className="error">{error}</div>}
       </form>

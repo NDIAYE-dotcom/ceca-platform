@@ -103,8 +103,8 @@ export default function SetPassword(){
       {!ready && <p className="muted">Vérification du lien…</p>}
       {ready && !success && (
         <form className="auth-form" onSubmit={handleSubmit}>
-          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Nouveau mot de passe" required disabled={!hasSession} />
-          <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Confirmer le mot de passe" required disabled={!hasSession} />
+          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Nouveau mot de passe" aria-label="Nouveau mot de passe" autoComplete="new-password" required disabled={!hasSession} />
+          <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Confirmer le mot de passe" aria-label="Confirmer le mot de passe" autoComplete="new-password" required disabled={!hasSession} />
           <button className="btn" type="submit" disabled={submitting || !hasSession}>{submitting ? 'Enregistrement…' : 'Valider et accéder à mes cours'}</button>
           {error && <div className="error">{error}</div>}
         </form>

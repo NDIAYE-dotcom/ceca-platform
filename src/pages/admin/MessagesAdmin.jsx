@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import useEscapeKey from '../../hooks/useEscapeKey'
 import '../../pages/Admin.css'
 import './MessagesAdmin.css'
 
@@ -10,6 +11,7 @@ export default function MessagesAdmin(){
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
+  useEscapeKey(()=>setSelected(null), Boolean(selected))
 
   async function load(){
     setLoading(true)
@@ -100,7 +102,14 @@ export default function MessagesAdmin(){
 
       <div className="message-list">
         {filtered.map(m => (
-          <div key={m.id} className="message-row" onClick={()=>setSelected(m)}>
+          <div
+            key={m.id}
+            className="message-row"
+            onClick={()=>setSelected(m)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e)=>{ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); setSelected(m) } }}
+          >
             <div className="message-row-main">
               <div className="message-row-top">
                 <span className="message-name">{m.name}</span>
@@ -119,7 +128,7 @@ export default function MessagesAdmin(){
 
       {selected && (
         <div className="modal-backdrop" onClick={()=>setSelected(null)}>
-          <div className="modal-card" onClick={e=>e.stopPropagation()}>
+          <div className="modal-card" onClick={e=>e.stopPropagation()} role="dialog" aria-modal="true">
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
               <h3>{selected.subject || selected.topic || 'Message'}</h3>
               <button className="admin-btn admin-btn-view" onClick={()=>setSelected(null)}>Fermer</button>

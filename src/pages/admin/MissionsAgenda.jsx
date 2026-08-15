@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import useEscapeKey from '../../hooks/useEscapeKey'
 import './MissionsAgenda.css'
 
 const STATUS_OPTIONS = [
@@ -34,6 +35,7 @@ export default function MissionsAgenda(){
   const [loading, setLoading] = useState(true)
   const [errorMsg, setErrorMsg] = useState(null)
   const [open, setOpen] = useState(false)
+  useEscapeKey(()=>setOpen(false), open)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
@@ -194,7 +196,7 @@ export default function MissionsAgenda(){
 
       {open && (
         <div className="fa-modal">
-          <div className="fa-modal-inner">
+          <div className="fa-modal-inner" role="dialog" aria-modal="true">
             <h3>{editing ? 'Éditer la mission' : 'Nouvelle mission'}</h3>
             <label className="fa-field">
               <span>Titre</span>
