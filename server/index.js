@@ -257,7 +257,11 @@ app.post('/api/create-learner-access', async (req, res) => {
     }
 
     const userId = linkData?.user?.id
-    const actionLink = linkData?.properties?.action_link
+    const hashedToken = linkData?.properties?.hashed_token
+    const verifyType = alreadyExisted ? 'recovery' : 'invite'
+    const actionLink = hashedToken && redirectTo
+      ? `${redirectTo}?token_hash=${encodeURIComponent(hashedToken)}&type=${verifyType}`
+      : linkData?.properties?.action_link
     if (userId) {
       try { await admin.from('profiles').upsert({ id: userId, email, full_name: name || undefined, role: 'learner' }) } catch (e) { console.warn('[create-learner-access] profile upsert failed', e) }
     }

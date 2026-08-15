@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import './Auth.css'
 
 const INVALID_LINK_MSG = "Ce lien n'est plus valide ou a déjà été utilisé. Demandez à l'administration de vous en renvoyer un."
 
 // Landing page for the invite / recovery link sent from
-// Espace administration => Apprenants ("Créer l'accès"). Supabase's client
-// parses the access token out of the URL hash asynchronously — getSession()
-// can resolve before that finishes, so we also listen for the auth event it
-// fires once the session is actually established, instead of trusting a
-// single getSession() snapshot.
+// Espace administration => Apprenants ("Créer l'accès"). The link points
+// here with ?token_hash=...&type=invite|recovery — we exchange that token
+// for a session ourselves via verifyOtp() instead of letting Supabase's own
+// /auth/v1/verify endpoint do it via a GET redirect. That GET-based exchange
+// gets silently consumed by link-preview bots (WhatsApp, iMessage, Telegram…)
+// fetching the URL server-side to build a preview card, before the real
+// person ever taps it — verifyOtp() only runs when our page's JS actually
+// executes, which preview bots don't do.
 export default function SetPassword(){
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -20,36 +23,48 @@ export default function SetPassword(){
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const nav = useNavigate()
+  const [searchParams] = useSearchParams()
 
   useEffect(()=>{
     let mounted = true
     let settled = false
 
-    function settle(found){
+    function settle(found, message){
       if(settled || !mounted) return
       settled = true
       setHasSession(found)
-      if(!found) setError(INVALID_LINK_MSG)
+      if(!found) setError(message || INVALID_LINK_MSG)
       setReady(true)
     }
 
-    supabase.auth.getSession().then(({ data })=>{
-      if(data?.session) settle(true)
-    })
+    async function run(){
+      const tokenHash = searchParams.get('token_hash')
+      const type = searchParams.get('type')
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session)=>{
-      if(session) settle(true)
-    })
+      if(tokenHash && type){
+        const { error: verifyError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type })
+        if(verifyError){
+          settle(false)
+          return
+        }
+        settle(true)
+        return
+      }
 
-    // Give Supabase up to 4s to finish parsing the URL hash before concluding
-    // the link is invalid — on a slow mobile connection this can take a beat.
-    const timeout = setTimeout(()=> settle(false), 4000)
-
-    return ()=>{
-      mounted = false
-      clearTimeout(timeout)
-      try{ listener?.subscription?.unsubscribe() }catch(e){}
+      // Fallback for the older hash-based link format (#access_token=...), in
+      // case a link generated before this change is still being used.
+      supabase.auth.getSession().then(({ data })=>{
+        if(data?.session) settle(true)
+      })
+      const { data: listener } = supabase.auth.onAuthStateChange((event, session)=>{
+        if(session) settle(true)
+      })
+      setTimeout(()=> settle(false), 4000)
+      return ()=>{ try{ listener?.subscription?.unsubscribe() }catch(e){} }
     }
+
+    run()
+    return ()=>{ mounted = false }
   },[])
 
   async function handleSubmit(e){
@@ -59,9 +74,6 @@ export default function SetPassword(){
     if(password !== confirm){ setError('Les mots de passe ne correspondent pas.'); return }
 
     setSubmitting(true)
-    // Re-check right before submitting — the URL-derived session can still
-    // have been lost between page load and now (link opened twice, link
-    // preview scanners consuming a one-time token, etc.).
     const { data: sessionData } = await supabase.auth.getSession()
     if(!sessionData?.session){
       setSubmitting(false)

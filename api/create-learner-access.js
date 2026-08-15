@@ -94,7 +94,18 @@ module.exports = async function handler(req, res) {
   }
 
   const userId = linkData?.user?.id
-  const actionLink = linkData?.properties?.action_link
+  // Build our own link instead of using Supabase's action_link. action_link
+  // performs the token exchange as a plain GET against Supabase's own domain —
+  // link-preview bots (WhatsApp, iMessage, Telegram...) fetch that URL server-side
+  // to generate a preview card, which silently consumes the one-time token before
+  // the real person ever taps it. Pointing straight at our own domain with the
+  // token as a query param means nothing gets consumed until our page's own JS
+  // calls supabase.auth.verifyOtp() — preview bots don't execute JavaScript.
+  const hashedToken = linkData?.properties?.hashed_token
+  const verifyType = alreadyExisted ? 'recovery' : 'invite'
+  const actionLink = hashedToken && redirectTo
+    ? `${redirectTo}?token_hash=${encodeURIComponent(hashedToken)}&type=${verifyType}`
+    : linkData?.properties?.action_link
 
   if (userId) {
     try {
