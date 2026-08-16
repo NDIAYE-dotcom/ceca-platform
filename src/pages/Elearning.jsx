@@ -87,7 +87,11 @@ export default function Elearning(){
           </div>
 
           <h3>Supports</h3>
-          <a href={course.pdf} target="_blank" rel="noreferrer" className="btn secondary">Télécharger le PDF</a>
+          {course.pdf_url ? (
+            <a href={course.pdf_url} target="_blank" rel="noreferrer" download className="btn secondary">Télécharger le PDF</a>
+          ) : (
+            <p className="note">Aucun support PDF disponible pour le moment.</p>
+          )}
 
           {/* Salle de cours (classroom) */}
           <Classroom course={course} />

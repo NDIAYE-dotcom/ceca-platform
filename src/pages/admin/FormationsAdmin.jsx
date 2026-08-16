@@ -38,7 +38,9 @@ export default function FormationsAdmin(){
   const [open, setOpen] = useState(false)
   useEscapeKey(()=>setOpen(false), open)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'' })
+  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'' })
+  const [pdfFile, setPdfFile] = useState(null)
+  const [uploadingPdf, setUploadingPdf] = useState(false)
 
   const USE_SUPABASE = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
 
@@ -70,9 +72,10 @@ export default function FormationsAdmin(){
 
   useEffect(()=>{ save(items) },[items])
 
-  function openCreate(){ setEditing(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'' }); setOpen(true) }
+  function openCreate(){ setEditing(null); setPdfFile(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'' }); setOpen(true) }
   function openEdit(it){
     setEditing(it.id)
+    setPdfFile(null)
     setForm({
       title: it.title,
       category: it.category,
@@ -87,7 +90,8 @@ export default function FormationsAdmin(){
       startDate: it.start_date || '',
       endDate: it.end_date || '',
       liveSessionAt: toDatetimeLocalValue(it.live_session_at),
-      liveSessionUrl: it.live_session_url || ''
+      liveSessionUrl: it.live_session_url || '',
+      pdfUrl: it.pdf_url || ''
     })
     setOpen(true)
   }
@@ -102,6 +106,26 @@ export default function FormationsAdmin(){
     if(form.startDate && form.endDate && form.endDate < form.startDate){
       return alert('La date de fin doit être postérieure à la date de début.')
     }
+    const id = editing || String(Date.now())
+
+    let pdfUrl = form.pdfUrl || null
+    if(pdfFile && USE_SUPABASE && supabase){
+      setUploadingPdf(true)
+      try{
+        const path = `${id}.pdf`
+        const { error: uploadError } = await supabase.storage.from('course-materials').upload(path, pdfFile, { upsert: true, contentType: 'application/pdf' })
+        if(uploadError) throw uploadError
+        const { data: publicUrlData } = supabase.storage.from('course-materials').getPublicUrl(path)
+        pdfUrl = publicUrlData?.publicUrl || pdfUrl
+      }catch(e){
+        console.warn('PDF upload failed', e)
+        alert("Échec de l'envoi du PDF : " + (e?.message || String(e)))
+        setUploadingPdf(false)
+        return
+      }
+      setUploadingPdf(false)
+    }
+
     const fields = {
       title: form.title,
       category: form.category,
@@ -116,9 +140,9 @@ export default function FormationsAdmin(){
       start_date: form.startDate || null,
       end_date: form.endDate || null,
       live_session_at: form.liveSessionAt ? new Date(form.liveSessionAt).toISOString() : null,
-      live_session_url: form.liveSessionUrl || null
+      live_session_url: form.liveSessionUrl || null,
+      pdf_url: pdfUrl
     }
-    const id = editing || String(Date.now())
     if(USE_SUPABASE && supabase){
       try{
         // Upsert rather than a plain update: items currently on screen may only exist in
@@ -281,8 +305,21 @@ export default function FormationsAdmin(){
                 Retirer la session live
               </button>
             )}
+            <label className="fa-field">
+              <span>Support PDF du cours</span>
+              <input type="file" accept="application/pdf" onChange={e=>setPdfFile(e.target.files?.[0] || null)} />
+              {form.pdfUrl && !pdfFile && (
+                <span className="fa-field-hint">PDF actuel : <a href={form.pdfUrl} target="_blank" rel="noreferrer">voir</a></span>
+              )}
+              {pdfFile && <span className="fa-field-hint">Nouveau fichier sélectionné : {pdfFile.name}</span>}
+            </label>
+            {form.pdfUrl && (
+              <button type="button" className="fa-field-clear" onClick={()=>{ setForm(s=>({ ...s, pdfUrl:'' })); setPdfFile(null) }}>
+                Retirer le PDF
+              </button>
+            )}
             <div className="fa-modal-actions">
-              <button className="btn" onClick={handleSave}>{editing ? 'Enregistrer' : 'Créer'}</button>
+              <button className="btn" onClick={handleSave} disabled={uploadingPdf}>{uploadingPdf ? 'Envoi du PDF…' : (editing ? 'Enregistrer' : 'Créer')}</button>
               <button className="btn secondary" onClick={()=>setOpen(false)}>Annuler</button>
             </div>
           </div>

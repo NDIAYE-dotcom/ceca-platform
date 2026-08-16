@@ -154,9 +154,9 @@ export default function Classroom({course}){
 
         {tab==='materials' && (
           <div className="materials">
-            {course?.pdf ? (
+            {course?.pdf_url ? (
               <ul>
-                <li><a href={course.pdf} target="_blank" rel="noreferrer">Support PDF du cours</a></li>
+                <li><a href={course.pdf_url} target="_blank" rel="noreferrer" download>Support PDF du cours</a></li>
               </ul>
             ) : (
               <p className="muted">Aucun support disponible pour le moment.</p>
