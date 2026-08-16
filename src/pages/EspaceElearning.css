@@ -4,8 +4,13 @@
 
 .elearning-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
 
-.elearning-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;background:#f8fafc;border:1px solid #e6e9ee;border-radius:16px;padding:24px 18px;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.elearning-card{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;background:#f8fafc;border:1px solid #e6e9ee;border-radius:16px;padding:24px 18px;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
 .elearning-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(11,61,145,0.1);border-color:var(--card-accent,#0b3d91)}
+
+.elearning-card--locked{background:#f1f5f9;opacity:.72}
+.elearning-card--locked:hover{opacity:1;box-shadow:0 12px 28px rgba(15,23,42,0.08);border-color:#cbd5e1}
+.elearning-card--locked .elearning-card-cta{color:#64748b}
+.elearning-card-lock{position:absolute;top:12px;right:12px;font-size:16px;background:#fff;border:1px solid #e2e8f0;border-radius:999px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(2,6,23,0.08)}
 
 .elearning-card-icon svg{width:72px;height:72px}
 
