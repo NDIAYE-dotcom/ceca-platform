@@ -21,12 +21,24 @@ function save(items){
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(items)) }catch(e){}
 }
 
+// <input type="datetime-local"> needs "YYYY-MM-DDTHH:mm" in the viewer's own
+// local time, not the UTC ISO string Postgres/Supabase store — format it by
+// hand rather than slicing the ISO string, which would silently shift the
+// displayed time by the local UTC offset.
+function toDatetimeLocalValue(iso){
+  if(!iso) return ''
+  const d = new Date(iso)
+  if(Number.isNaN(d.getTime())) return ''
+  const pad = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 export default function FormationsAdmin(){
   const [items, setItems] = useState([])
   const [open, setOpen] = useState(false)
   useEscapeKey(()=>setOpen(false), open)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'' })
+  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'' })
 
   const USE_SUPABASE = Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
 
@@ -58,7 +70,7 @@ export default function FormationsAdmin(){
 
   useEffect(()=>{ save(items) },[items])
 
-  function openCreate(){ setEditing(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'' }); setOpen(true) }
+  function openCreate(){ setEditing(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'' }); setOpen(true) }
   function openEdit(it){
     setEditing(it.id)
     setForm({
@@ -73,7 +85,9 @@ export default function FormationsAdmin(){
       available: it.available !== false,
       elearningEnabled: it.elearning_enabled !== false,
       startDate: it.start_date || '',
-      endDate: it.end_date || ''
+      endDate: it.end_date || '',
+      liveSessionAt: toDatetimeLocalValue(it.live_session_at),
+      liveSessionUrl: it.live_session_url || ''
     })
     setOpen(true)
   }
@@ -100,7 +114,9 @@ export default function FormationsAdmin(){
       available: form.available,
       elearning_enabled: form.elearningEnabled,
       start_date: form.startDate || null,
-      end_date: form.endDate || null
+      end_date: form.endDate || null,
+      live_session_at: form.liveSessionAt ? new Date(form.liveSessionAt).toISOString() : null,
+      live_session_url: form.liveSessionUrl || null
     }
     const id = editing || String(Date.now())
     if(USE_SUPABASE && supabase){
@@ -250,6 +266,21 @@ export default function FormationsAdmin(){
               <input type="checkbox" name="elearningEnabled" checked={form.elearningEnabled} onChange={handleChange} />
               <span>Visible dans l'Espace e-learning</span>
             </label>
+            <div className="fa-field-row">
+              <label className="fa-field">
+                <span>Session live — date et heure (optionnel)</span>
+                <input type="datetime-local" name="liveSessionAt" value={form.liveSessionAt} onChange={handleChange} />
+              </label>
+              <label className="fa-field">
+                <span>Lien de la session (Zoom, Meet…)</span>
+                <input type="url" name="liveSessionUrl" value={form.liveSessionUrl} onChange={handleChange} placeholder="https://meet.google.com/..." />
+              </label>
+            </div>
+            {(form.liveSessionAt || form.liveSessionUrl) && (
+              <button type="button" className="fa-field-clear" onClick={()=>setForm(s=>({ ...s, liveSessionAt:'', liveSessionUrl:'' }))}>
+                Retirer la session live
+              </button>
+            )}
             <div className="fa-modal-actions">
               <button className="btn" onClick={handleSave}>{editing ? 'Enregistrer' : 'Créer'}</button>
               <button className="btn secondary" onClick={()=>setOpen(false)}>Annuler</button>

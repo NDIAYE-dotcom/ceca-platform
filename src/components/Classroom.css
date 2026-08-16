@@ -1,17 +1,21 @@
 .classroom{margin-top:14px;padding:12px}
-.classroom-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.classroom-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px;flex-wrap:wrap}
 .classroom-header h3{margin:0;font-size:16px;color:var(--blue)}
+.classroom-no-live{font-size:13px;color:var(--muted);font-weight:600}
+.classroom-live-date{margin:0 0 10px;font-size:13px;color:#0b3d91;font-weight:600}
 .classroom-tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab-btn{background:#f3f5f8;border:1px solid #e6e9ee;padding:8px 10px;border-radius:6px;cursor:pointer}
 .tab-btn.active{background:#0b3d91;color:#fff;border-color:#0b3d91}
 .classroom-body{min-height:120px}
-.messages{max-height:240px;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:8px}
-.message{background:rgba(11,61,145,0.03);padding:8px;border-radius:6px}
+.messages{max-height:280px;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:8px}
+.message{background:rgba(11,61,145,0.03);padding:8px 10px;border-radius:6px;font-size:14px;line-height:1.45}
+.message--own{background:rgba(11,61,145,0.09)}
 .composer{display:flex;gap:8px;margin-top:8px}
 .composer input{flex:1;padding:8px;border-radius:6px;border:1px solid #e6e9ee}
 .participants{display:flex;flex-direction:column;gap:8px}
-.participant{padding:8px;border-radius:6px;background:#fafbfc;border:1px solid #e6e9ee}
-.materials ul{padding-left:16px}
+.participant{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:#fafbfc;border:1px solid #e6e9ee;font-size:14px}
+.participant-avatar{flex:none;width:28px;height:28px;border-radius:50%;background:#eef2ff;color:#3730a3;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.materials ul{padding-left:16px;margin:0}
 .materials li{margin-bottom:6px}
 
 @media (max-width:800px){
