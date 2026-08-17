@@ -33,12 +33,41 @@ function toDatetimeLocalValue(iso){
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
+// Simple plain-text authoring format for quiz questions, so this stays a
+// textarea (like "Modules") instead of a dynamic add/remove-row form:
+//   Question text
+//   Wrong option
+//   Correct option*
+//   Wrong option
+//   ---
+//   Next question...
+function parseQuizText(text){
+  return String(text || '')
+    .split(/\n\s*---\s*\n/)
+    .map(block => block.split('\n').map(l => l.trim()).filter(Boolean))
+    .filter(lines => lines.length >= 3)
+    .map(lines => {
+      const [question, ...optionLines] = lines
+      const options = optionLines.map(l => l.replace(/\*$/, '').trim())
+      const correct = optionLines.findIndex(l => l.trim().endsWith('*'))
+      return { question, options, correct: correct === -1 ? 0 : correct }
+    })
+}
+
+function serializeQuiz(quiz){
+  if(!Array.isArray(quiz) || !quiz.length) return ''
+  return quiz.map(q => [
+    q.question,
+    ...(q.options || []).map((opt, i) => i === q.correct ? `${opt}*` : opt)
+  ].join('\n')).join('\n---\n')
+}
+
 export default function FormationsAdmin(){
   const [items, setItems] = useState([])
   const [open, setOpen] = useState(false)
   useEscapeKey(()=>setOpen(false), open)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'' })
+  const [form, setForm] = useState({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'', quizText:'' })
   const [pdfFile, setPdfFile] = useState(null)
   const [uploadingPdf, setUploadingPdf] = useState(false)
 
@@ -72,7 +101,7 @@ export default function FormationsAdmin(){
 
   useEffect(()=>{ save(items) },[items])
 
-  function openCreate(){ setEditing(null); setPdfFile(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'' }); setOpen(true) }
+  function openCreate(){ setEditing(null); setPdfFile(null); setForm({ title:'', category:'', duration:'', description:'', target:'', objective:'', modulesText:'', icon:'', available:true, elearningEnabled:true, startDate:'', endDate:'', liveSessionAt:'', liveSessionUrl:'', pdfUrl:'', quizText:'' }); setOpen(true) }
   function openEdit(it){
     setEditing(it.id)
     setPdfFile(null)
@@ -91,7 +120,8 @@ export default function FormationsAdmin(){
       endDate: it.end_date || '',
       liveSessionAt: toDatetimeLocalValue(it.live_session_at),
       liveSessionUrl: it.live_session_url || '',
-      pdfUrl: it.pdf_url || ''
+      pdfUrl: it.pdf_url || '',
+      quizText: serializeQuiz(it.quiz)
     })
     setOpen(true)
   }
@@ -141,7 +171,8 @@ export default function FormationsAdmin(){
       end_date: form.endDate || null,
       live_session_at: form.liveSessionAt ? new Date(form.liveSessionAt).toISOString() : null,
       live_session_url: form.liveSessionUrl || null,
-      pdf_url: pdfUrl
+      pdf_url: pdfUrl,
+      quiz: parseQuizText(form.quizText)
     }
     if(USE_SUPABASE && supabase){
       try{
@@ -318,6 +349,17 @@ export default function FormationsAdmin(){
                 Retirer le PDF
               </button>
             )}
+            <label className="fa-field">
+              <span>Quiz de contrôle</span>
+              <textarea
+                name="quizText"
+                value={form.quizText}
+                onChange={handleChange}
+                rows={8}
+                placeholder={"Quel est l'objectif principal de l'audit institutionnel ?\nRéduire les effectifs\nÉvaluer la conformité et la performance*\nSupprimer des services\n---\nDeuxième question ?\nRéponse correcte*\nAutre réponse"}
+              />
+              <span className="fa-field-hint">Une question et ses réponses par bloc, séparés par une ligne "---". Ajoutez * à la fin de la bonne réponse.</span>
+            </label>
             <div className="fa-modal-actions">
               <button className="btn" onClick={handleSave} disabled={uploadingPdf}>{uploadingPdf ? 'Envoi du PDF…' : (editing ? 'Enregistrer' : 'Créer')}</button>
               <button className="btn secondary" onClick={()=>setOpen(false)}>Annuler</button>
